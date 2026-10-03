@@ -1,0 +1,190 @@
+.page {
+  --import-ink: #09223b;
+  --import-gold: #b67d22;
+  --import-border: #e4e8eb;
+  background: #fcfdfd;
+  color: var(--import-ink);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #052f43;
+  color: #fff;
+}
+
+.heroMedia {
+  position: absolute;
+  inset: 0 0 0 auto;
+  z-index: -1;
+  width: 100%;
+}
+
+.heroMedia::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(90deg, #052f43, rgb(5 47 67 / 76%) 23%, rgb(5 47 67 / 16%) 55%, transparent);
+}
+
+.heroImage { object-fit: cover; object-position: 65% 55%; }
+
+.heroInner {
+  display: flex;
+  align-items: center;
+  min-height: 490px;
+  padding-block: 62px;
+}
+
+.heroContent { position: relative; max-width: 620px; }
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 19px;
+  color: #f2cb7d;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  line-height: 1.7;
+}
+
+.eyebrow > span { width: 25px; height: 2px; flex-shrink: 0; background: currentColor; }
+.hero h1 { font-size: clamp(2.25rem, 4.3vw, 3.5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.035em; text-transform: uppercase; }
+.heroSubtitle { margin-top: 10px; font-family: var(--font-display); font-size: clamp(1.1rem, 2.05vw, 1.65rem); font-weight: 700; line-height: 1.5; text-transform: uppercase; }
+.heroSubtitle span { color: #f2cb7d; }
+.heroDescription { margin-top: 22px; color: #e3edf1; font-size: 16px; line-height: 1.85; }
+.quoteButton { min-height: 49px; margin-top: 34px; gap: 20px; border-radius: 5px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.content { padding-block: 39px 46px; }
+.sectionHeading { margin-bottom: 27px; text-align: center; }
+.headingRow { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.headingRow h2 { font-size: clamp(1.2rem, 2.2vw, 1.75rem); font-weight: 800; line-height: 1.5; text-transform: uppercase; }
+.headingRow > span { position: relative; width: 52px; height: 1px; flex-shrink: 0; background: linear-gradient(90deg, transparent, var(--import-gold)); }
+.headingRow > span:last-child { transform: rotate(180deg); }
+.headingRow > span::after { position: absolute; top: -3px; right: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--import-gold); content: ""; }
+.sectionHeading p { margin-top: 6px; color: #566675; font-size: 14px; line-height: 1.8; }
+
+.servicesGrid, .additionalGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+.serviceCard { min-width: 0; padding: 28px 20px 26px; border: 1px solid var(--import-border); border-radius: 12px; background: #fff; text-align: center; }
+.serviceIcon { display: grid; place-items: center; width: 76px; height: 76px; margin: 0 auto 19px; border: 1px solid #be934d; border-radius: 50%; background: #fffefa; }
+.serviceIcon svg { width: 36px; height: 36px; }
+.serviceCard h3 { display: flex; align-items: center; justify-content: center; min-height: 70px; font-size: 16px; font-weight: 800; line-height: 1.5; }
+.serviceCard p { max-width: 175px; margin: 14px auto 0; color: #566675; font-size: 13px; line-height: 1.85; }
+.additionalSection { margin-top: 30px; }
+.additionalSection > h2 { margin-bottom: 20px; font-size: 19px; font-weight: 800; line-height: 1.5; text-align: center; text-transform: uppercase; }
+.additionalCard { min-width: 0; }
+.thumbnail { position: relative; overflow: hidden; aspect-ratio: 1.75; border-radius: 9px; background: #e9edf0; }
+.thumbnail img { object-fit: cover; }
+.additionalCard h3 { margin-top: 12px; font-size: 12px; font-weight: 700; line-height: 1.65; text-align: center; }
+.page a:focus-visible { outline: 3px solid var(--import-gold); outline-offset: 5px; }
+
+.detailPanels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 20px; margin-top: 34px; }
+.detailPanel { display: flex; flex-direction: column; min-width: 0; padding: 25px 22px 20px; border: 1px solid var(--import-border); border-radius: 12px; background: #fff; }
+.detailPanel > h2 { font-size: 19px; font-weight: 800; line-height: 1.6; text-align: center; text-transform: uppercase; }
+.panelAccent { width: 38px; height: 2px; margin: 11px auto 20px; background: #d3a555; }
+.marketsContent { display: grid; grid-template-columns: 128px minmax(0, 1fr); align-items: center; flex: 1; gap: 13px; }
+.marketList { display: grid; gap: 11px; }
+.marketList li { display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.marketList li > span { display: grid; place-items: center; width: 27px; height: 20px; flex-shrink: 0; border: 1px solid #e5dccb; border-radius: 3px; background: #fcf8ef; color: #85612a; font-size: 9px; font-weight: 700; letter-spacing: 0.045em; }
+.marketMap { position: relative; min-width: 0; min-height: 255px; }
+.marketMap img { object-fit: contain; }
+.marketNote { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 19px; color: #657381; font-size: 11px; line-height: 1.7; }
+.marketNote svg { width: 14px; height: 14px; color: var(--import-gold); }
+.categoryGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); flex: 1; gap: 17px 14px; }
+.categoryCard { display: block; min-width: 0; border-radius: 8px; }
+.categoryImage { position: relative; overflow: hidden; aspect-ratio: 1.65; border: 1px solid #e5e9ed; border-radius: 8px; background: #e9edf0; }
+.categoryImage img { object-fit: cover; transition: transform 220ms ease; }
+.categoryCard h3 { margin-top: 8px; padding-inline: 1px; font-size: 10px; font-weight: 700; line-height: 1.6; text-align: center; }
+.categoryCard:hover h3 { color: var(--import-gold); }
+.moreCategories { align-self: center; width: min(100%, 365px); min-height: 40px; height: auto; gap: 14px; margin-top: 20px; padding: 10px 15px; border-radius: 5px; font-size: 11px; font-weight: 800; letter-spacing: 0.025em; line-height: 1.5; text-align: center; text-transform: uppercase; white-space: normal; }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .categoryCard:hover .categoryImage img { transform: scale(1.035); }
+}
+
+@media (max-width: 999px) {
+  .detailPanels { grid-template-columns: minmax(0, 1fr); }
+  .detailPanel { padding: 27px; }
+  .marketsContent { grid-template-columns: 150px minmax(0, 1fr); gap: 24px; }
+  .marketMap { min-height: 285px; }
+  .marketList { gap: 12px; }
+  .marketList li { font-size: 13px; }
+  .categoryGrid { gap: 20px; }
+  .categoryCard h3 { font-size: 12px; }
+}
+
+@media (max-width: 1099px) {
+  .servicesGrid, .additionalGrid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .serviceCard, .additionalCard { grid-column: span 2; }
+  .serviceCard:nth-last-child(-n + 2), .additionalCard:nth-last-child(-n + 2) { grid-column: span 3; }
+  .heroMedia::after { background: linear-gradient(90deg, #052f43, rgb(5 47 67 / 76%) 42%, rgb(5 47 67 / 12%) 85%); }
+  .heroContent { max-width: 530px; }
+}
+
+@media (max-width: 767px) {
+  .heroInner { min-height: 455px; padding-block: 45px; }
+  .heroMedia { width: 100%; }
+  .heroMedia::after { background: linear-gradient(90deg, #052f43, rgb(5 47 67 / 87%) 43%, rgb(5 47 67 / 25%)); }
+  .hero h1 { font-size: 38px; }
+  .heroDescription { font-size: 14px; }
+  .content { padding-block: 32px; }
+  .headingRow { gap: 16px; }
+  .headingRow > span { width: 30px; }
+  .servicesGrid, .additionalGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .serviceCard, .additionalCard, .serviceCard:nth-last-child(-n + 2), .additionalCard:nth-last-child(-n + 2) { grid-column: auto; }
+  .serviceCard:last-child, .additionalCard:last-child { grid-column: 1 / -1; width: calc(50% - 8px); justify-self: center; }
+  .serviceCard { padding: 23px 17px; }
+  .serviceCard h3 { min-height: 63px; font-size: 14px; }
+  .serviceCard p { font-size: 12px; }
+  .serviceIcon { width: 66px; height: 66px; margin-bottom: 14px; }
+  .serviceIcon svg { width: 32px; height: 32px; }
+}
+
+@media (max-width: 600px) {
+  .heroInner { min-height: 0; padding-top: 235px; padding-bottom: 38px; }
+  .heroMedia { bottom: auto; height: 300px; }
+  .heroMedia::after { background: linear-gradient(180deg, transparent 30%, rgb(5 47 67 / 30%) 58%, #052f43 96%); }
+  .heroImage { object-position: 85% 48%; }
+  .heroContent { width: 100%; }
+  .hero h1 { font-size: clamp(1.85rem, 8.1vw, 2.6rem); }
+  .heroSubtitle { font-size: clamp(1rem, 4.1vw, 1.35rem); }
+  .eyebrow { margin-bottom: 13px; font-size: 9px; letter-spacing: 0.12em; }
+  .eyebrow > span { width: 18px; }
+  .heroDescription { margin-top: 17px; font-size: 13px; }
+  .desktopBreak { display: none; }
+  .quoteButton { width: 100%; margin-top: 24px; }
+  .headingRow { gap: 11px; }
+  .headingRow > span { width: 23px; }
+  .headingRow h2 { font-size: clamp(1rem, 4.2vw, 1.3rem); }
+  .sectionHeading p { max-width: 290px; margin-inline: auto; margin-top: 10px; font-size: 12px; }
+  .additionalSection > h2 { font-size: 17px; }
+  .detailPanels { gap: 22px; margin-top: 30px; }
+  .detailPanel { padding: 24px 19px 21px; }
+  .detailPanel > h2 { font-size: 16px; }
+  .marketsContent { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 15px; }
+  .marketList { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+  .marketList li { gap: 7px; font-size: 12px; }
+  .marketMap { width: 100%; min-height: 0; aspect-ratio: 2; }
+  .categoryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 14px; }
+  .categoryCard h3 { font-size: 11px; }
+  .moreCategories { font-size: 10px; }
+}
+
+@media (max-width: 479px) {
+  .servicesGrid, .additionalGrid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .serviceCard:last-child, .additionalCard:last-child { grid-column: auto; width: 100%; }
+  .serviceCard { display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: center; gap: 7px 17px; padding: 21px 19px; text-align: left; }
+  .serviceIcon { grid-row: span 2; width: 58px; height: 58px; margin: 0; }
+  .serviceIcon svg { width: 29px; height: 29px; }
+  .serviceCard h3 { display: block; min-height: 0; font-size: 13px; }
+  .serviceCard p { max-width: none; margin: 0; font-size: 11px; line-height: 1.75; }
+  .additionalGrid { gap: 22px; }
+  .thumbnail { aspect-ratio: 2.15; }
+  .additionalCard h3 { margin-top: 10px; font-size: 13px; }
+  .categoryGrid { grid-template-columns: minmax(0, 1fr); }
+  .categoryImage { aspect-ratio: 2.15; }
+  .categoryCard h3 { font-size: 12px; }
+}
