@@ -1,3 +1,5 @@
+import { withSocialMetadata } from "@/lib/social";
+import { absoluteUrl, jsonLd } from "@/lib/seo";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -14,13 +16,11 @@ export async function generateMetadata({ params }) {
   const product = await getProductBySlug(productSlug);
   if (!product) return { title: "Product not found", robots: { index: false } };
 
-  return {
+  return withSocialMetadata({
     title: product.name,
     description: (product.description || `Buy ${product.name} for international export.`).slice(0, 155),
     alternates: { canonical: `/products/${productSlug}` },
-    openGraph: product.image_url ? { images: [product.image_url] } : undefined,
-    twitter: product.image_url ? { images: [product.image_url] } : undefined,
-  };
+  }, { kind: "products", item: product });
 }
 
 export default async function ProductPage({ params }) {
@@ -30,7 +30,7 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "Product", name: product.name, description: product.description, image: product.image_url || undefined, category: product.category?.name }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({ "@context": "https://schema.org", "@type": "Product", name: product.name, description: product.description, image: product.image_url || undefined, category: product.category?.name, url: absoluteUrl(`/products/${product.slug}`), sku: product.id }) }} />
 
       <section className="border-b border-border bg-surface-muted">
         <div className="container-x py-6">

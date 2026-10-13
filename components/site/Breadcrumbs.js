@@ -1,3 +1,4 @@
+import { absoluteUrl, jsonLd } from "@/lib/seo";
 import Link from "next/link";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,7 @@ export function Breadcrumbs({ items, tone = "default" }) {
 
   return (
     <nav aria-label="Breadcrumb" className="text-sm">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ label: "Home", href: "/" }, ...items].map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.label, ...(item.href ? { item: absoluteUrl(item.href) } : {}) })) }) }} />
       <ol className="flex flex-wrap items-center gap-1.5">
         <li>
           <Link href="/" className={cn("inline-flex items-center gap-1 font-medium transition-colors", linkClass)}>

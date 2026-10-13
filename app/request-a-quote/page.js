@@ -1,21 +1,22 @@
+import { withSocialMetadata } from "@/lib/social";
 export const dynamic = "force-dynamic";
 
 import { Clock, ShieldCheck, Ship } from "lucide-react";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { QuoteForm } from "@/components/site/QuoteForm";
-import { getAllProducts } from "@/lib/data";
+import { getQuoteProductOptions } from "@/lib/data";
 import { IMPORT_CATEGORIES } from "@/lib/import-services";
 
 export async function generateMetadata({ searchParams }) {
   const query = await searchParams;
   const isImport = query?.service === "import";
-  return {
+  return withSocialMetadata({
     title: isImport ? "Request a Custom Import Quote" : "Request a Custom Export Quote",
     description: isImport
       ? "Tell us the products you want to import, your quantity, source market and delivery location in India. Our team will help with sourcing, pricing and shipping."
       : "Tell us what products you need, your required quantity, destination, and packaging preferences. Our team will contact you with availability and pricing.",
     alternates: { canonical: isImport ? "/request-a-quote?service=import" : "/request-a-quote" },
-  };
+  });
 }
 
 export default async function QuotePage({ searchParams }) {
@@ -23,7 +24,7 @@ export default async function QuotePage({ searchParams }) {
   const isImport = query?.service === "import";
   const category = isImport ? IMPORT_CATEGORIES.find((item) => item.slug === query?.category) : null;
   const product = Array.isArray(query?.product) ? query.product[0] : query?.product ?? "";
-  const products = isImport ? [] : await getAllProducts({ limit: 200 });
+  const products = isImport ? [] : await getQuoteProductOptions();
 
   return (
     <>

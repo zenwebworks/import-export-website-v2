@@ -1,3 +1,5 @@
+import { invalidateCatalogue } from "@/lib/catalogue-cache";
+import { validObjectId } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
@@ -13,6 +15,7 @@ export async function PUT(request, { params }) {
 
   try {
     const { id } = await params;
+    if (!validObjectId(id)) return NextResponse.json({ error: "Invalid record ID" }, { status: 400 });
     const body = await request.json();
     const parsed = categorySchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message || "Invalid data" }, { status: 400 });
@@ -24,11 +27,13 @@ export async function PUT(request, { params }) {
     const existing = await Category.findById(id);
     if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
 
-    if (existing.image?.publicId && parsed.data.image?.publicId !== existing.image.publicId) {
+    const category = await Category.findByIdAndUpdate(id, parsed.data, { new: true, runValidators: true }).lean();
+    if (!category) return NextResponse.json({ error: "Record no longer exists" }, { status: 404 });
+    invalidateCatalogue();
+    if (parsed.data.image && existing.image?.publicId && parsed.data.image?.publicId !== existing.image.publicId) {
       await deleteImage(existing.image.publicId).catch(() => null);
     }
 
-    const category = await Category.findByIdAndUpdate(id, parsed.data, { new: true, runValidators: true }).lean();
     return NextResponse.json({ category: normalizeCategory(category) });
   } catch (error) {
     return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
@@ -41,6 +46,7 @@ export async function DELETE(request, { params }) {
 
   try {
     const { id } = await params;
+    if (!validObjectId(id)) return NextResponse.json({ error: "Invalid record ID" }, { status: 400 });
     await connectDB();
 
     const inUse = await Product.countDocuments({ category: id });
@@ -49,6 +55,7 @@ export async function DELETE(request, { params }) {
     const category = await Category.findByIdAndDelete(id);
     if (!category) return NextResponse.json({ error: "Category not found" }, { status: 404 });
 
+    invalidateCatalogue();
     if (category.image?.publicId) await deleteImage(category.image.publicId).catch(() => null);
     return NextResponse.json({ success: true });
   } catch (error) {

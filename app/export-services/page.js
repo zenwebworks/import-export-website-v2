@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, FileText, Globe2, Network, PackageOpen, ShieldCheck } from "lucide-react";
@@ -9,7 +10,7 @@ const title = "Export Services — From India. To the World.";
 const description =
   "Complete export support from India: product sourcing, global buyer connections, supplier verification, quality checks, transparent pricing, packaging and shipping.";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Export Services",
   description,
   alternates: { canonical: "/export-services" },
@@ -19,15 +20,13 @@ export const metadata = {
     url: "/export-services",
     siteName: SITE.name,
     type: "website",
-    images: [{ url: "/assets/export-services-hero.webp", width: 1672, height: 941, alt: "A container ship carrying products across the teal ocean" }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/assets/export-services-hero.webp"],
   },
-};
+});
 
 const heroBenefits = ["Trusted Sourcing", "Global Network", "Quality Assured", "On-Time Delivery", "End-to-End Support"];
 

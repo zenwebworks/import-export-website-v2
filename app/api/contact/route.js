@@ -1,3 +1,4 @@
+import { parsePagination } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
@@ -17,7 +18,7 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true, id: message._id }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to submit message" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to submit message" }, { status: error.status === 400 ? 400 : 500 });
   }
 }
 
@@ -28,18 +29,18 @@ export async function GET(request) {
   try {
     await connectDB();
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.min(50, parseInt(searchParams.get("limit") || "15", 10));
+    const { page, limit } = parsePagination(searchParams, 15, 50);
     const status = searchParams.get("status") || "";
+    if (status && !["unread", "read"].includes(status)) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     const query = status ? { status } : {};
     const skip = (page - 1) * limit;
     const [messages, total] = await Promise.all([
-      ContactMessage.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ContactMessage.find(query).sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).lean(),
       ContactMessage.countDocuments(query),
     ]);
 
-    return NextResponse.json({ messages, total, page, totalPages: Math.ceil(total / limit) });
+    return NextResponse.json({ messages, total, page, totalPages: Math.ceil(total / limit) }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
+    return NextResponse.json({ error: error.status === 400 ? error.message : "Failed to fetch messages" }, { status: error.status === 400 ? 400 : 500 });
   }
 }

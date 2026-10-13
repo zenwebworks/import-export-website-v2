@@ -1,3 +1,4 @@
+import { invalidateCatalogue } from "@/lib/catalogue-cache";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
@@ -32,6 +33,7 @@ export async function POST(request) {
     if (existing) return NextResponse.json({ error: "A category with this slug already exists" }, { status: 409 });
 
     const category = await Category.create(parsed.data);
+    invalidateCatalogue();
     return NextResponse.json({ category: normalizeCategory(category.toObject()) }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to create category" }, { status: 500 });

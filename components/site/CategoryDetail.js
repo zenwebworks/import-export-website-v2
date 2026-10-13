@@ -1,61 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CataloguePagination } from "./CataloguePagination";
+import { useState, useTransition } from "react";
 import { Package, PackageSearch, Search, X } from "lucide-react";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { CTASection } from "@/components/site/CTASection";
-import { ProductCard } from "@/components/site/ProductCard";
+import { ProductGrid } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import styles from "./category-detail.module.css";
 
-export function CategoryDetail({ category, products = [] }) {
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-
-  const filtered = useMemo(() => {
-    const needle = search.toLowerCase().trim();
-    if (!needle) return products;
-    return products.filter((product) =>
-      [product.name, product.description, product.category?.name, product.packaging_details]
-        .join(" ")
-        .toLowerCase()
-        .includes(needle),
-    );
-  }, [products, search]);
-
-  const hasProducts = products.length > 0;
-
-  function submitSearch(event) {
-    event.preventDefault();
-    setSearch(searchInput.trim());
+export function CategoryDetail({ category, products = [], initialSearch = "", pagination = {} }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [searchInput, setSearchInput] = useState(initialSearch);
+  const search = initialSearch;
+  const filtered = products;
+  const hasProducts = (pagination.total || 0) > 0 || Boolean(search);
+  function navigate(value) {
+    const params = new URLSearchParams();
+    if (value) params.set("search", value);
+    startTransition(() => router.push(`/categories/${category.slug}${params.size ? `?${params}` : ""}`, { scroll: false }));
   }
-
-  function clearSearch() {
-    setSearchInput("");
-    setSearch("");
-  }
+  function submitSearch(event) { event.preventDefault(); navigate(searchInput.trim()); }
+  function clearSearch() { setSearchInput(""); navigate(""); }
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-navy text-white">
-        <div className="absolute inset-0 opacity-15 [background:radial-gradient(circle_at_20%_30%,white,transparent_50%),radial-gradient(circle_at_80%_80%,white,transparent_50%)]" />
+      <section className={styles.hero} aria-labelledby="category-title">
         <div className="container-x relative grid gap-8 py-12 md:py-20 lg:grid-cols-[1fr_320px] lg:items-center">
           <div>
             <Breadcrumbs tone="light" items={[{ label: "Categories", href: "/categories" }, { label: category.name }]} />
             <div className="mt-4 max-w-3xl">
-              <span className="inline-flex items-center rounded-full border border-gold/40 bg-gold/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gold">Product Category</span>
-              <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">{category.name}</h1>
+              <span className={styles.eyebrow}>Product Category</span>
+              <h1 id="category-title" className="mt-3 text-3xl font-bold leading-tight md:text-5xl">{category.name}</h1>
               <p className="mt-4 leading-relaxed text-white/85">{category.description || `Browse export products listed under ${category.name}.`}</p>
-              <p className="mt-4 text-sm text-white/70"><span className="font-bold text-gold">{products.length}</span> {products.length === 1 ? "product" : "products"} currently listed</p>
+              <p className="mt-4 text-sm text-white/70"><span className="font-bold text-gold">{pagination.total ?? products.length}</span> {pagination.total === 1 ? "product" : "products"} {search ? "matching your search" : "currently listed"}</p>
             </div>
           </div>
-          <div className="hidden overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-elevated lg:block">
-            <div className="aspect-square bg-gradient-ocean">
+          <div className={`hidden overflow-hidden rounded-2xl lg:block ${styles.artwork}`}>
+            <div className="aspect-square">
               {category.image_url ? (
-                <img src={category.image_url} alt={category.name} className="h-full w-full object-cover" />
+                <img src={category.image_url} alt={category.name} className="h-full w-full object-contain mix-blend-multiply" />
               ) : (
-                <div className="grid h-full w-full place-items-center text-white">
+                <div className="grid h-full w-full place-items-center text-[#0b4248]">
                   <Package className="h-16 w-16" />
                 </div>
               )}
@@ -64,7 +54,8 @@ export function CategoryDetail({ category, products = [] }) {
         </div>
       </section>
 
-      <section className="container-x py-12">
+      <section id="product-list" aria-label="Category products" className="container-x py-10 lg:py-14">
+        <fieldset disabled={pending} className="min-w-0 border-0 p-0">
         {hasProducts && (
           <CategorySearch
             categoryName={category.name}
@@ -76,6 +67,9 @@ export function CategoryDetail({ category, products = [] }) {
           />
         )}
 
+        </fieldset>
+        {pending && <p role="status" className="mt-4 text-sm text-muted-foreground">Updating products…</p>}
+        <div aria-busy={pending} className={pending ? "opacity-60" : ""}>
         {!hasProducts ? (
           <div className="rounded-2xl border border-dashed border-border bg-surface-muted p-12 text-center">
             <PackageSearch className="mx-auto h-10 w-10 text-muted-foreground" />
@@ -94,10 +88,10 @@ export function CategoryDetail({ category, products = [] }) {
             </div>
           </div>
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((product) => <ProductCard key={product.id} product={product} />)}
-          </div>
+          <ProductGrid products={filtered} />
         )}
+        </div>
+        <CataloguePagination path={`/categories/${category.slug}`} {...pagination} search={search} />
       </section>
 
       <CTASection />
@@ -113,6 +107,7 @@ function CategorySearch({ categoryName, value, activeSearch, onChange, onSubmit,
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
+            aria-label={`Search ${categoryName} products`}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             placeholder={`Search ${categoryName} products`}

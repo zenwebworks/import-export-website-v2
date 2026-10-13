@@ -7,10 +7,13 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint",
-        "seed": "node scripts/seed.js"
+        "seed": "node scripts/seed.js",
+        "test": "node --experimental-vm-modules --test tests/*.test.mjs",
+        "check:seo": "node scripts/check-seo.mjs"
     },
     "dependencies": {
         "@tailwindcss/postcss": "latest",
+        "@tanstack/react-query": "^5.104.2",
         "bcryptjs": "^3.0.3",
         "class-variance-authority": "latest",
         "cloudinary": "^2.10.0",

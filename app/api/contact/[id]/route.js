@@ -1,3 +1,4 @@
+import { validObjectId } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import ContactMessage from "@/models/ContactMessage";
@@ -9,8 +10,10 @@ export async function PATCH(request, { params }) {
 
   try {
     const { id } = await params;
+    if (!validObjectId(id)) return NextResponse.json({ error: "Invalid record ID" }, { status: 400 });
     const body = await request.json();
-    const status = body?.status === "read" ? "read" : "unread";
+    const status = body?.status;
+    if (!["unread", "read"].includes(status)) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     await connectDB();
     const message = await ContactMessage.findByIdAndUpdate(id, { status }, { new: true }).lean();
     if (!message) return NextResponse.json({ error: "Message not found" }, { status: 404 });
@@ -26,6 +29,7 @@ export async function DELETE(request, { params }) {
 
   try {
     const { id } = await params;
+    if (!validObjectId(id)) return NextResponse.json({ error: "Invalid record ID" }, { status: 400 });
     await connectDB();
     const message = await ContactMessage.findByIdAndDelete(id);
     if (!message) return NextResponse.json({ error: "Message not found" }, { status: 404 });

@@ -5,38 +5,40 @@ export function CategoryCard({ category, productCount = 0 }) {
   return (
     <Link
       href={`/categories/${category.slug}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-card-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated"
+      className="group relative flex min-w-0 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-card-soft transition-[border-color,box-shadow] duration-200 hover:border-ocean/40 hover:shadow-elevated focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ocean motion-reduce:transition-none"
     >
-      <div className="relative aspect-square overflow-hidden bg-gradient-navy">
+      <div className={`relative aspect-square shrink-0 overflow-hidden ${category.image_url ? "bg-white" : "bg-gradient-navy"}`}>
         {category.image_url ? (
           <img
             src={category.image_url}
-            alt={category.name}
+            alt=""
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-contain"
           />
         ) : (
           <>
             <div className="absolute inset-0 opacity-20 [background:radial-gradient(circle_at_20%_10%,white,transparent_40%),radial-gradient(circle_at_80%_90%,white,transparent_40%)]" />
             <div className="absolute inset-0 grid place-items-center text-white">
-              <div className="grid h-16 w-16 place-items-center rounded-2xl bg-white/12 ring-1 ring-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
-                <Package className="h-6 w-6" />
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/12 ring-1 ring-white/20 backdrop-blur-sm sm:h-12 sm:w-12">
+                <Package aria-hidden="true" className="h-5 w-5" />
               </div>
             </div>
           </>
         )}
-        <div className="absolute right-3 top-3">
-          <span className="rounded-full bg-navy/60 px-2.5 py-1 text-[11px] font-medium text-white ring-1 ring-white/20 backdrop-blur">
-            {productCount} products
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col p-3 sm:p-4">
+        <p className="mb-1.5 text-xs font-medium text-muted-foreground">
+          {productCount} {productCount === 1 ? "product" : "products"}
+        </p>
+        <h2 className="text-sm font-bold leading-snug text-navy [overflow-wrap:anywhere] sm:text-base">{category.name}</h2>
+        {category.description && (
+          <p className="mt-2 hidden text-sm leading-relaxed text-muted-foreground sm:line-clamp-2">{category.description}</p>
+        )}
+        <div className="mt-auto pt-3">
+          <span className="flex items-center justify-between gap-2 border-t border-border pt-2.5 text-xs font-semibold text-ocean sm:text-sm">
+            View Category <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0" />
           </span>
         </div>
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-bold leading-snug text-navy">{category.name}</h3>
-        <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{category.description}</p>
-        <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-ocean transition-all group-hover:gap-2">
-          View Category <ArrowRight className="h-4 w-4" />
-        </span>
       </div>
     </Link>
   );

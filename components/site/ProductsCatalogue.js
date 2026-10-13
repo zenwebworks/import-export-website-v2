@@ -1,15 +1,18 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-import { PackageSearch, Search, X } from "lucide-react";
-import { Breadcrumbs } from "@/components/site/Breadcrumbs";
-import { ProductCard } from "@/components/site/ProductCard";
+import { useState, useTransition } from "react";
+import { ArrowRight, Check, CheckCircle2, ChevronDown, PackageSearch, Search, X } from "lucide-react";
+import { ProductGrid } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { CataloguePagination } from "./CataloguePagination";
+import styles from "./products-catalogue.module.css";
 
-export function ProductsCatalogue({ initialSearch = {}, products = [], categories = [] }) {
+export function ProductsCatalogue({ initialSearch = {}, products = [], categories = [], pagination = {} }) {
   const router = useRouter();
   const pathname = usePathname();
   const initialQuery = normalizeValue(initialSearch.search || initialSearch.q);
@@ -17,29 +20,15 @@ export function ProductsCatalogue({ initialSearch = {}, products = [], categorie
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [search, setSearch] = useState(initialQuery);
 
-  const filtered = useMemo(() => {
-    let list = products;
-    const needle = search.toLowerCase().trim();
-
-    if (needle) {
-      list = list.filter((product) =>
-        [product.name, product.description, product.category?.name, product.packaging_details]
-          .join(" ")
-          .toLowerCase()
-          .includes(needle),
-      );
-    }
-
-    if (category) list = list.filter((product) => product.category?.slug === category);
-    return list;
-  }, [category, products, search]);
+  const filtered = products;
+  const [pending, startTransition] = useTransition();
 
   function updateUrl(nextSearch, nextCategory) {
     const params = new URLSearchParams();
     if (nextSearch) params.set("search", nextSearch);
     if (nextCategory) params.set("category", nextCategory);
     const query = params.toString();
-    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    startTransition(() => router.push(query ? `${pathname}?${query}` : pathname, { scroll: false }));
   }
 
   function submitSearch(event) {
@@ -69,17 +58,10 @@ export function ProductsCatalogue({ initialSearch = {}, products = [], categorie
 
   return (
     <>
-      <section className="bg-gradient-navy text-white">
-        <div className="container-x py-12 md:py-16">
-          <Breadcrumbs tone="light" items={[{ label: "Products" }]} />
-          <h1 className="mt-4 text-3xl font-bold leading-tight md:text-5xl">Explore Our Export Products</h1>
-          <p className="mt-3 max-w-2xl text-white/80">
-            Browse our product catalogue and contact us for pricing, packaging, availability, and international delivery information.
-          </p>
-        </div>
-      </section>
+      <ProductsHero />
 
-      <section className="container-x py-10 lg:py-14">
+      <section id="product-list" aria-label="Product catalogue" className={`container-x py-10 lg:py-14 ${styles.catalogueSection}`}>
+        <fieldset disabled={pending} className="min-w-0 border-0 p-0">
         <ProductControls
           searchInput={searchInput}
           activeSearch={search}
@@ -90,16 +72,109 @@ export function ProductsCatalogue({ initialSearch = {}, products = [], categorie
           onClearSearch={clearSearch}
           onSelectCategory={selectCategory}
         />
+        </fieldset>
+        {pending && <p role="status" className="mt-4 text-sm text-muted-foreground">Updating products…</p>}
 
+        <div aria-busy={pending} className={pending ? "opacity-60" : ""}>
         {filtered.length === 0 ? (
           <EmptyState hasSearch={Boolean(search)} hasCategory={Boolean(category)} onClear={clearAll} />
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((product) => <ProductCard key={product.id} product={product} />)}
-          </div>
+          <ProductGrid products={filtered} />
         )}
+        </div>
+        <CataloguePagination path="/products" {...pagination} search={initialQuery} category={normalizeValue(initialSearch.category)} />
       </section>
+
+      <CustomPackaging />
     </>
+  );
+}
+
+function ProductsHero() {
+  const highlights = ["Product sourcing", "Flexible packaging", "Export support"];
+
+  return (
+    <section className={styles.hero} aria-labelledby="products-hero-title">
+      <div className={styles.heroMedia}>
+        <Image
+          src="/assets/products-trade-hero-v2.webp"
+          alt="Indian spices, rice, nuts, oil and brassware beside a cargo port at sunrise"
+          fill
+          priority
+          sizes="100vw"
+          className={styles.heroImage}
+        />
+      </div>
+      <div className={`container-x ${styles.heroInner}`}>
+        <div className={styles.heroContent}>
+          <p className={`${styles.eyebrow} ${styles.heroEyebrow}`}>Discover our export collection</p>
+          <h1 id="products-hero-title" className={styles.heroTitle}>Our Products</h1>
+          <p className={styles.heroSubtitle}>From India. <span>For your market.</span></p>
+          <p className={styles.heroDescription}>
+            Explore food, natural ingredients and handcrafted goods,
+            with sourcing, packaging and export support for your business.
+          </p>
+          <ul className={styles.heroHighlights}>
+            {highlights.map((label) => (
+              <li key={label}><Check aria-hidden="true" /><span>{label}</span></li>
+            ))}
+          </ul>
+          <div className={styles.heroActions}>
+            <Button asChild variant="gold" size="lg" className={styles.heroButton}>
+              <Link href="#product-list">Explore products <ArrowRight aria-hidden="true" /></Link>
+            </Button>
+            <Button asChild variant="outlineLight" size="lg" className={styles.heroButton}>
+              <Link href="/request-a-quote">Request a quote</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CustomPackaging() {
+  const options = [
+    "Branding & label design",
+    "Retail pouches & jars",
+    "Bulk cartons & sacks",
+    "Material & size options",
+  ];
+
+  return (
+    <section id="custom-packaging" aria-labelledby="custom-packaging-title" className={`container-x ${styles.packagingSection}`}>
+      <div className={styles.packagingPanel}>
+        <div className={styles.packagingContent}>
+          <p className={styles.eyebrow}>Packaging & private label</p>
+          <h2 id="custom-packaging-title" className={styles.packagingTitle}>
+            Your product.<br />Your brand. Your packaging.
+          </h2>
+          <p className={styles.packagingDescription}>
+            From a retail shelf to a bulk shipment, the right pack makes a
+            difference. Let&apos;s plan a packaging format around your product and your market.
+          </p>
+          <ul className={styles.packagingOptions}>
+            {options.map((option) => (
+              <li key={option}><CheckCircle2 aria-hidden="true" /><span>{option}</span></li>
+            ))}
+          </ul>
+          <Button asChild variant="navy" className={styles.bannerButton}>
+            <Link href="/request-a-quote">Discuss custom packaging <ArrowRight aria-hidden="true" /></Link>
+          </Button>
+          <p className={styles.packagingNote}>Tell us your pack size, quantity and destination.</p>
+        </div>
+        <div className={styles.packagingArtwork}>
+          <img
+            src="/assets/products-custom-packaging.webp"
+            alt="Navy and kraft pouches, a spice jar, retail and shipping boxes, and a burlap sack showing packaging options"
+            width="1200"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -115,11 +190,15 @@ function ProductControls({
 }) {
   return (
     <div className="rounded-lg border border-border bg-card p-3 shadow-card-soft sm:p-4">
-      <form onSubmit={onSubmitSearch} className="flex flex-col gap-2 sm:flex-row">
-        <div className="relative flex-1">
+      <form
+        onSubmit={onSubmitSearch}
+        className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 md:grid-cols-[minmax(0,1fr)_auto_minmax(12rem,18rem)] md:gap-3"
+      >
+        <div className="relative col-span-2 min-w-0 md:col-span-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
+            aria-label="Search products"
             value={searchInput}
             onChange={(event) => onSearchInput(event.target.value)}
             placeholder="Enter product name, category, or packaging"
@@ -136,38 +215,27 @@ function ProductControls({
             </button>
           )}
         </div>
-        <Button type="submit" variant="navy" className="h-12 rounded-lg px-6 sm:w-36">
+        <Button type="submit" variant="navy" className="h-12 rounded-lg px-3 sm:px-6 md:w-36">
           <Search className="h-4 w-4" /> Search
         </Button>
-      </form>
-
-      <div className="mt-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex min-w-max gap-2">
-          <CategoryPill active={!activeCategory} onClick={() => onSelectCategory("")}>All</CategoryPill>
-          {categories.map((cat) => (
-            <CategoryPill key={cat.id} active={activeCategory === cat.slug} onClick={() => onSelectCategory(cat.slug)}>
-              {cat.name}
-            </CategoryPill>
-          ))}
+        <div className="relative min-w-0">
+          <label htmlFor="product-category-filter" className="sr-only">Filter by category</label>
+          <Select
+            id="product-category-filter"
+            name="category"
+            value={activeCategory}
+            onChange={(event) => onSelectCategory(event.target.value)}
+            className="h-12 min-w-0 cursor-pointer appearance-none truncate rounded-lg border-border bg-surface-muted pl-3 pr-9 text-base text-navy shadow-none hover:border-ocean focus-visible:ring-ocean/40 md:text-sm"
+          >
+            <option value="">All categories</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.slug}>{cat.name}</option>
+            ))}
+          </Select>
+          <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         </div>
-      </div>
+      </form>
     </div>
-  );
-}
-
-function CategoryPill({ active, onClick, children }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
-        active
-          ? "border-navy bg-navy text-white shadow-card-soft"
-          : "border-border bg-background text-muted-foreground hover:border-ocean hover:text-navy"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 

@@ -1,12 +1,13 @@
+import { withSocialMetadata } from "@/lib/social";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { SITE } from "@/lib/site";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Privacy Policy",
   description:
-    "Read how Meridian Global Trade collects, uses, and protects your personal information when you contact us or request an export quote.",
+    "Read how Ramshel Global Trade collects, uses, and protects your personal information when you contact us or request an export quote.",
   alternates: { canonical: "/privacy-policy" },
-};
+});
 
 const sections = [
   {

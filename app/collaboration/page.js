@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -22,7 +23,7 @@ import styles from "./collaboration.module.css";
 
 const description = "Build stronger global trade partnerships with Ramshel: business collaboration, supplier relationships, distributor networks, product development and joint ventures.";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Collaboration",
   description,
   alternates: { canonical: "/collaboration" },
@@ -32,15 +33,13 @@ export const metadata = {
     url: "/collaboration",
     siteName: SITE.name,
     type: "website",
-    images: [{ url: "/assets/collaboration-hero.webp", width: 1920, height: 640, alt: "Business partnership connecting global markets" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Collaborate. Connect. Grow Together.",
     description,
-    images: ["/assets/collaboration-hero.webp"],
   },
-};
+});
 
 const partnershipValues = [
   { icon: Globe2, firstLine: "Global", secondLine: "Network" },

@@ -1,3 +1,4 @@
+import { parsePagination } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Product from "@/models/Product";
@@ -43,7 +44,7 @@ export async function POST(request) {
     Promise.allSettled([sendQuoteRequestEmail(quote), sendQuoteConfirmationEmail(quote)]).catch(() => null);
     return NextResponse.json({ success: true, id: quote._id }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to submit quote request" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to submit quote request" }, { status: error.status === 400 ? 400 : 500 });
   }
 }
 
@@ -54,18 +55,18 @@ export async function GET(request) {
   try {
     await connectDB();
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.min(50, parseInt(searchParams.get("limit") || "15", 10));
+    const { page, limit } = parsePagination(searchParams, 15, 50);
     const status = searchParams.get("status") || "";
+    if (status && !["new", "processed"].includes(status)) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     const query = status ? { status } : {};
     const skip = (page - 1) * limit;
     const [quotes, total] = await Promise.all([
-      QuoteRequest.find(query).populate("product", "name slug").sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      QuoteRequest.find(query).populate("product", "name slug").sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).lean(),
       QuoteRequest.countDocuments(query),
     ]);
 
-    return NextResponse.json({ quotes, total, page, totalPages: Math.ceil(total / limit) });
+    return NextResponse.json({ quotes, total, page, totalPages: Math.ceil(total / limit) }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch quote requests" }, { status: 500 });
+    return NextResponse.json({ error: error.status === 400 ? error.message : "Failed to fetch quote requests" }, { status: error.status === 400 ? 400 : 500 });
   }
 }

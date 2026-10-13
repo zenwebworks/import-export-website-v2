@@ -1,11 +1,12 @@
+import { withSocialMetadata } from "@/lib/social";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import {
-  ArrowRight,
   BadgeCheck,
   Boxes,
   CheckCircle2,
+  ChevronRight,
   CircleDollarSign,
   ClipboardCheck,
   Factory,
@@ -29,12 +30,12 @@ import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { getAllCategories, getHomepageProducts } from "@/lib/data";
 import catalogueStyles from "./home-catalogue.module.css";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Global Import and Export Company | Quality Products and Worldwide Trade",
   description:
     "Explore quality export products, international trade solutions, competitive pricing, custom packaging, and reliable worldwide shipping support.",
   alternates: { canonical: "/" },
-};
+});
 
 const whyUs = [
   { icon: ShieldCheck, title: "Premium Quality", desc: "Assured products from trusted sources." },
@@ -89,7 +90,7 @@ const collaborationPoints = [
 export default async function HomePage() {
   const [categories, featured] = await Promise.all([
     getAllCategories(),
-    getHomepageProducts(12),
+    getHomepageProducts(10),
   ]);
 
   return (
@@ -97,48 +98,50 @@ export default async function HomePage() {
       <HeroCarousel />
 
       <section id="catalogue" aria-labelledby="featured-categories-heading" className={catalogueStyles.section}>
-        <div className={`container-x ${catalogueStyles.sectionLayout}`}>
+        <div className={catalogueStyles.sectionLayout}>
           <SectionHead
             id="featured-categories-heading"
-            eyebrow="Explore our catalogue"
             title="Featured Categories"
-            text="Find the right category for your business and explore our export range."
           />
-          <Button asChild variant="outline" className={catalogueStyles.browseLink}>
-            <Link href="/categories">
-              View All Categories <ArrowRight aria-hidden="true" />
-            </Link>
-          </Button>
-          <div className={catalogueStyles.categoryGrid}>
-            {categories.map((category) => (
-              <HomeCategoryTile key={category.id} category={category} />
+          <div className={catalogueStyles.showcaseGrid}>
+            {categories.slice(0, 10).map((category) => (
+              <HomeCatalogueTile
+                key={category.id}
+                name={category.name}
+                imageUrl={category.image_url}
+                href={`/categories/${category.slug}`}
+              />
             ))}
           </div>
+          <Link href="/categories" className={catalogueStyles.browseLink}>
+            View All Categories
+          </Link>
         </div>
       </section>
 
       <section
         id="featured-products"
         aria-labelledby="featured-products-heading"
-        className={`${catalogueStyles.section} ${catalogueStyles.productsSection}`}
+        className={catalogueStyles.section}
       >
-        <div className={`container-x ${catalogueStyles.sectionLayout}`}>
+        <div className={catalogueStyles.sectionLayout}>
           <SectionHead
             id="featured-products-heading"
-            eyebrow="From India to your market"
             title="Featured Export Products"
-            text="Explore our selected products and request a quote for your requirements."
           />
-          <Button asChild variant="outline" className={catalogueStyles.browseLink}>
-            <Link href="/products">
-              View All Products <ArrowRight aria-hidden="true" />
-            </Link>
-          </Button>
-          <div className={catalogueStyles.productGrid}>
+          <div className={catalogueStyles.showcaseGrid}>
             {featured.map((product) => (
-              <HomeProductTile key={product.id} product={product} />
+              <HomeCatalogueTile
+                key={product.id}
+                name={product.name}
+                imageUrl={product.image_url}
+                href={`/products/${product.slug}`}
+              />
             ))}
           </div>
+          <Link href="/products" className={catalogueStyles.browseLink}>
+            View All Products
+          </Link>
         </div>
       </section>
 
@@ -318,27 +321,23 @@ export default async function HomePage() {
   );
 }
 
-function SectionHead({ id, eyebrow, title, text }) {
+function SectionHead({ id, title }) {
   return (
     <div className={catalogueStyles.sectionHeading}>
-      <p className={catalogueStyles.eyebrow}>{eyebrow}</p>
       <h2 id={id} className={catalogueStyles.sectionTitle}>{title}</h2>
-      <p className={catalogueStyles.sectionDescription}>{text}</p>
     </div>
   );
 }
 
-function HomeCategoryTile({ category }) {
+function HomeCatalogueTile({ name, imageUrl, href }) {
   return (
-    <Link
-      href={`/categories/${category.slug}`}
-      className={catalogueStyles.categoryCard}
-    >
-      <div className={catalogueStyles.categoryImage}>
-        {category.image_url ? (
+    <Link href={href} className={catalogueStyles.showcaseCard}>
+      <h3 className={catalogueStyles.cardName}>{name}</h3>
+      <div className={catalogueStyles.cardImage}>
+        {imageUrl ? (
           <img
-            src={category.image_url}
-            alt={category.name}
+            src={imageUrl}
+            alt=""
             loading="lazy"
             decoding="async"
           />
@@ -348,61 +347,10 @@ function HomeCategoryTile({ category }) {
           </div>
         )}
       </div>
-      <div className={catalogueStyles.categoryContent}>
-        <h3 className={catalogueStyles.categoryName}>{category.name}</h3>
-        <span className={catalogueStyles.categoryArrow} aria-hidden="true">
-          <ArrowRight />
-        </span>
-      </div>
+      <span className={catalogueStyles.cardArrow} aria-hidden="true">
+        <ChevronRight />
+      </span>
     </Link>
-  );
-}
-
-function HomeProductTile({ product }) {
-  return (
-    <article className={catalogueStyles.productCard}>
-      <Link
-        href={`/products/${product.slug}`}
-        className={catalogueStyles.productImage}
-        aria-label={`View ${product.name}`}
-      >
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            loading="lazy"
-            decoding="async"
-          />
-        ) : (
-          <div className={catalogueStyles.imageFallback}>
-            <Package aria-hidden="true" />
-          </div>
-        )}
-        {product.featured && (
-          <span className={catalogueStyles.featuredBadge}>
-            Featured
-          </span>
-        )}
-      </Link>
-      <div className={catalogueStyles.productContent}>
-        <div className={catalogueStyles.productCategory}>
-          {product.category && <p>{product.category.name}</p>}
-        </div>
-        <h3 className={catalogueStyles.productName}>
-          <Link href={`/products/${product.slug}`}>
-            {product.name}
-          </Link>
-        </h3>
-        <Button asChild variant="navy" className={catalogueStyles.quoteLink}>
-          <Link
-            href={`/request-a-quote?product=${encodeURIComponent(product.slug)}`}
-            aria-label={`Request a quote for ${product.name}`}
-          >
-            Get a Quote <ArrowRight aria-hidden="true" />
-          </Link>
-        </Button>
-      </div>
-    </article>
   );
 }
 

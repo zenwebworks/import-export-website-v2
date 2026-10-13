@@ -1,3 +1,5 @@
+import { invalidateCatalogue } from "@/lib/catalogue-cache";
+import { parsePagination, validObjectId } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
@@ -16,8 +18,7 @@ export async function GET(request) {
   try {
     await connectDB();
     const { searchParams } = new URL(request.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = Math.min(100, parseInt(searchParams.get("limit") || "12", 10));
+    const { page, limit } = parsePagination(searchParams, 12, 100);
     const category = searchParams.get("category") || "";
     const search = searchParams.get("search") || "";
     const featured = searchParams.get("featured") || "";
@@ -30,7 +31,7 @@ export async function GET(request) {
     if (featured === "homepage") query.showOnHomepage = true;
 
     const skip = (page - 1) * limit;
-    const sortSpec = sort === "az" ? { name: 1 } : { createdAt: -1 };
+    const sortSpec = sort === "az" ? { name: 1, _id: 1 } : { createdAt: -1, _id: -1 };
     const [products, total] = await Promise.all([
       Product.find(query).populate("category", "name slug image description").sort(sortSpec).skip(skip).limit(limit).lean(),
       Product.countDocuments(query),
@@ -38,7 +39,7 @@ export async function GET(request) {
 
     return NextResponse.json({ products: products.map(normalizeProduct), total, page, totalPages: Math.ceil(total / limit) });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    return NextResponse.json({ error: error.status === 400 ? error.message : "Failed to fetch products" }, { status: error.status === 400 ? 400 : 500 });
   }
 }
 
@@ -55,10 +56,12 @@ export async function POST(request) {
     const existing = await Product.findOne({ slug: parsed.data.slug });
     if (existing) return NextResponse.json({ error: "A product with this slug already exists" }, { status: 409 });
 
+    if (!validObjectId(parsed.data.category) || !await Category.exists({ _id: parsed.data.category })) return NextResponse.json({ error: "Choose an existing category" }, { status: 400 });
     const product = await Product.create(parsed.data);
     await product.populate("category", "name slug image description");
+    invalidateCatalogue();
     return NextResponse.json({ product: normalizeProduct(product.toObject()) }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to create product" }, { status: error.status === 400 ? 400 : 500 });
   }
 }

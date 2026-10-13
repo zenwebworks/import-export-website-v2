@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import {
   Award,
   BadgeCheck,
@@ -9,17 +10,18 @@ import {
   Globe2,
   Handshake,
   Rocket,
+  Scale,
   ShieldCheck,
   Target,
   Users,
 } from "lucide-react";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "About Us",
   description:
     "Learn about Ramshel Global Trade, our company values, director message, registrations, memberships, and commitment to reliable import export solutions.",
   alternates: { canonical: "/about" },
-};
+});
 
 const companyFacts = [
   ["Company Name", "RAMSHEL ENTERPRISES PVT LTD"],
@@ -69,7 +71,7 @@ export default function AboutPage() {
           <article className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
             <div className="grid gap-0 lg:grid-cols-[minmax(0,0.92fr)_minmax(360px,1.08fr)]">
               <div className="p-5 sm:p-7">
-                <SectionTitle icon={Building2} title="About Our Company" />
+                <SectionTitle as="h1" icon={Building2} title="About Our Company" />
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
                   We are committed to professional trade coordination, quality-focused sourcing and
                   dependable support for partners across global markets.
@@ -93,16 +95,18 @@ export default function AboutPage() {
           </article>
 
           <article className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
-            <div className="grid gap-0 lg:grid-cols-[minmax(280px,0.58fr)_minmax(0,1fr)]">
-              <div className="bg-surface p-4 sm:p-5 lg:p-6">
+            <div className="grid gap-0 md:grid-cols-[minmax(240px,0.58fr)_minmax(0,1fr)]">
+              <div className="flex items-center justify-center bg-surface p-4 sm:p-5 lg:p-6">
                 <img
-                  src="/assets/about-director-placeholder.png"
-                  alt="Director placeholder portrait"
+                  src="/assets/about-director.jpeg"
+                  alt="Director of Ramshel Enterprises"
+                  width={1086}
+                  height={1448}
                   loading="lazy"
-                  className="mx-auto aspect-[4/5] w-full max-w-[360px] rounded-md object-cover object-top lg:h-full lg:max-h-[420px]"
+                  className="aspect-[3/4] w-full max-w-[240px] rounded-md object-cover lg:max-w-[280px]"
                 />
               </div>
-              <div className="p-5 sm:p-7">
+              <div className="min-w-0 self-center p-5 sm:p-7">
                 <SectionTitle icon={Award} title="Our Director" />
                 <h2 className="mt-4 text-xl font-extrabold text-navy">Director&apos;s Message</h2>
                 <blockquote className="mt-4 border-l-4 border-gold pl-4 text-sm font-medium leading-relaxed text-muted-foreground">
@@ -114,9 +118,35 @@ export default function AboutPage() {
                   every import and export relationship.
                 </p>
                 <div className="mt-5 border-t border-border pt-4">
-                  <p className="text-sm font-extrabold text-navy">Director Name</p>
                   <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Director, RAMSHEL ENTERPRISES PVT LTD
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
+            <div className="grid gap-0 md:grid-cols-[minmax(240px,0.58fr)_minmax(0,1fr)]">
+              <div className="flex items-center justify-center bg-surface p-4 sm:p-5 lg:p-6">
+                <img
+                  src="/assets/about-director-placeholder.png"
+                  alt="Legal advisor of Ramshel Enterprises"
+                  width={1122}
+                  height={1402}
+                  loading="lazy"
+                  className="aspect-[3/4] w-full max-w-[240px] rounded-md object-cover object-top lg:max-w-[280px]"
+                />
+              </div>
+              <div className="min-w-0 self-center p-5 sm:p-7">
+                <SectionTitle icon={Scale} title="Our Legal Advisor" />
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  Legal guidance supports our commitment to transparent, responsible business
+                  practices and trusted relationships with our trade partners.
+                </p>
+                <div className="mt-5 border-t border-border pt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Legal Advisor, RAMSHEL ENTERPRISES PVT LTD
                   </p>
                 </div>
               </div>
@@ -160,8 +190,8 @@ export default function AboutPage() {
           <div>
             <SectionTitle icon={FileCheck2} title="Registrations & Licences" />
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              A trade business needs reliable documentation habits. These placeholder tiles can be
-              replaced with actual registration and licence files whenever the final documents are ready.
+              Contact our team for registration, licensing and documentation information relevant
+              to your trade requirements.
             </p>
             <div className="mt-6 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5">
               {registrations.map((item) => (
@@ -175,7 +205,7 @@ export default function AboutPage() {
           <div className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
             <img
               src="/assets/about-registrations-trade.png"
-              alt="Trade registrations and international documentation placeholder"
+              alt="Trade registrations and international documentation"
               loading="lazy"
               className="h-full min-h-[300px] w-full object-cover"
             />
@@ -206,13 +236,13 @@ export default function AboutPage() {
   );
 }
 
-function SectionTitle({ icon: Icon, title, centered = false }) {
+function SectionTitle({ icon: Icon, title, centered = false, as: Heading = "h2" }) {
   return (
     <div className={centered ? "flex flex-col items-center text-center" : "flex items-center gap-3"}>
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-gold/15 text-gold">
         <Icon className="h-5 w-5" />
       </span>
-      <h2 className="text-xl font-extrabold uppercase text-navy sm:text-2xl">{title}</h2>
+      <Heading className="text-xl font-extrabold uppercase text-navy sm:text-2xl">{title}</Heading>
     </div>
   );
 }

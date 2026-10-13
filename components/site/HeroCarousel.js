@@ -169,6 +169,7 @@ export function HeroCarousel() {
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
     >
+      <h1 className="sr-only">Ramshel Global Trade — Import, Export and Global Sourcing from India</h1>
       <div className="absolute inset-0 -z-10">
         {SLIDES.map((slide, slideIndex) => (
           <div
@@ -230,10 +231,10 @@ export function HeroCarousel() {
                   slideIndex === index ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0",
                 )}
               >
-                <h1 className="text-[clamp(2.4rem,10.5vw,2.9rem)] font-extrabold uppercase leading-[0.92] text-white drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)] sm:text-6xl lg:text-6xl xl:text-7xl">
+                <h2 className="text-[clamp(2.4rem,10.5vw,2.9rem)] font-extrabold uppercase leading-[0.92] text-white drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)] sm:text-6xl lg:text-6xl xl:text-7xl">
                   {slide.headlineTop}
                   <span className="mt-1 block text-gold">{slide.headlineBottom}</span>
-                </h1>
+                </h2>
                 <p className="mt-3 max-w-[33rem] text-lg font-semibold leading-relaxed text-white/95 sm:mt-5 sm:hidden" style={TEXT_SHADOW}>
                   {slide.mobileParagraph || slide.paragraph}
                 </p>

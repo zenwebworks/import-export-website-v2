@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -23,12 +24,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Global Sourcing Services",
   description:
     "Source reliable products from India with supplier search, verification, quality assurance, packaging support, logistics coordination and global trade guidance.",
   alternates: { canonical: "/sourcing" },
-};
+});
 
 const sourcingServices = [
   { icon: Factory, label: "Manufacturer Sourcing" },

@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, FileText, Globe2, Network, PackageOpen, ShieldCheck } from "lucide-react";
@@ -8,7 +9,7 @@ import styles from "./import-services.module.css";
 
 const description = "Connect your business in India with global products through trusted sourcing, supplier verification, quality checks, import documentation and shipping support.";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Import Services",
   description,
   alternates: { canonical: "/import-services" },
@@ -18,15 +19,13 @@ export const metadata = {
     url: "/import-services",
     siteName: SITE.name,
     type: "website",
-    images: [{ url: "/assets/import-services-hero.webp", width: 1920, height: 640, alt: "A cargo ship connecting global markets with India" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Import Services — From the World. To India.",
     description,
-    images: ["/assets/import-services-hero.webp"],
   },
-};
+});
 
 const services = [
   { icon: PackageOpen, title: "Product Sourcing", description: "We source quality products from trusted suppliers across the globe." },

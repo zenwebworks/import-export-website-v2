@@ -1,3 +1,4 @@
+import { withSocialMetadata } from "@/lib/social";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, Clock3, FileText, Globe2, Handshake, Headset, Mail, MapPin, Package, Phone, ShieldCheck, Ship } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaYoutube } from "react-icons/fa6";
@@ -6,11 +7,11 @@ import { ContactForm } from "@/components/site/ContactForm";
 import { SITE } from "@/lib/site";
 import styles from "./contact.module.css";
 
-export const metadata = {
+export const metadata = withSocialMetadata({
   title: "Contact Us",
   description: `Contact ${SITE.name} for import and export enquiries, product sourcing, small business collaboration and global trade support.`,
   alternates: { canonical: "/contact" },
-};
+});
 
 const companyName = "Ramshel Enterprises Pvt Ltd";
 const website = "https://www.ramshelglobaltrade.com";

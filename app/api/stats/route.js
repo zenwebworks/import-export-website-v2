@@ -32,7 +32,7 @@ export async function GET() {
       ContactMessage.find().sort({ createdAt: -1 }).limit(5).lean(),
     ]);
 
-    return NextResponse.json({ totalCategories, totalProducts, totalQuotes, newQuotes, totalMessages, unreadMessages, recentQuotes, recentMessages });
+    return NextResponse.json({ totalCategories, totalProducts, totalQuotes, newQuotes, totalMessages, unreadMessages, recentQuotes, recentMessages }, { headers: { "Cache-Control": "private, no-store" } });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
   }

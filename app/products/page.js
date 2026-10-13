@@ -1,17 +1,22 @@
+import { withSocialMetadata } from "@/lib/social";
 export const dynamic = "force-dynamic";
-
+import { notFound } from "next/navigation";
 import { ProductsCatalogue } from "@/components/site/ProductsCatalogue";
-import { getAllCategories, getAllProducts } from "@/lib/data";
+import { getAllCategories, getProductsPage } from "@/lib/data";
+import { catalogueParams } from "@/lib/request-params";
+import { catalogueMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Export Products Catalogue",
-  description: "Browse our export product catalogue and contact us for pricing, packaging, availability, and international delivery information.",
-  alternates: { canonical: "/products" },
-};
-
-export default async function ProductsPage({ searchParams }) {
-  const query = await searchParams;
-  const [categories, products] = await Promise.all([getAllCategories(), getAllProducts({ limit: 200 })]);
-  return <ProductsCatalogue initialSearch={query} categories={categories} products={products} />;
+export async function generateMetadata({ searchParams }) {
+  const query = catalogueParams(await searchParams);
+  return withSocialMetadata({
+    title: `Export Products Catalogue${query.page > 1 ? ` — Page ${query.page}` : ""}`,
+    description: "Browse our export product catalogue and contact us for pricing, packaging, availability, and international delivery information.",
+    ...catalogueMetadata("/products", query),
+  });
 }
-
+export default async function ProductsPage({ searchParams }) {
+  const query = catalogueParams(await searchParams);
+  const [categories, result] = await Promise.all([getAllCategories(), getProductsPage(query.category, query.search, query.page)]);
+  if (query.page > Math.max(1, result.totalPages)) notFound();
+  return <ProductsCatalogue key={JSON.stringify(query)} initialSearch={query} categories={categories} products={result.products} pagination={result} />;
+}
