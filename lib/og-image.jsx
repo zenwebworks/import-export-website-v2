@@ -6,8 +6,8 @@ import { CATALOGUE_TAG } from "./catalogue-cache";
 import { OG_SIZE, OG_VERSION } from "./social";
 import { loadOgPhoto } from "./og-photo";
 
-const navy = "#09283d";
-const gold = "#dfbd73";
+const black = "#08090b";
+const yellow = "#ffb51b";
 let logoPromise;
 function logoData() {
   return logoPromise ??= readFile(join(process.cwd(), "public/assets/og-logo.png"))
@@ -20,66 +20,68 @@ export function cardText(value, limit) {
   return chars.length > limit ? `${chars.slice(0, limit - 1).join("")}…` : chars.join("");
 }
 
-function TradeGlobe() {
-  return (
-    <svg width="480" height="480" viewBox="0 0 480 480" fill="none">
-      <circle cx="240" cy="240" r="204" fill="#103b50" stroke="#356070" strokeWidth="1.5" />
-      <circle cx="240" cy="240" r="160" stroke="#527480" strokeWidth="1.5" />
-      <ellipse cx="240" cy="240" rx="84" ry="160" stroke="#527480" strokeWidth="1.5" />
-      <ellipse cx="240" cy="240" rx="160" ry="62" stroke="#527480" strokeWidth="1.5" />
-      <path d="M80 240H400M240 80V400M113 143H367M113 337H367" stroke="#527480" strokeWidth="1.5" />
-      <path d="M104 304C148 129 268 115 375 206M146 359C223 275 323 275 375 206" stroke={gold} strokeWidth="3" />
-      <circle cx="104" cy="304" r="10" fill={gold} />
-      <circle cx="375" cy="206" r="10" fill={gold} />
-      <circle cx="146" cy="359" r="7" fill={gold} />
-      <circle cx="270" cy="158" r="7" fill={gold} />
-      <circle cx="240" cy="240" r="229" stroke="#356070" strokeWidth="1" strokeDasharray="3 12" />
-    </svg>
-  );
+// Balance short names across two lines, while longer names use smaller, wrapping type.
+function titleLayout(title) {
+  const words = title.split(" ");
+  if (title.length <= 28 && words.length > 1) {
+    let split = 1;
+    for (let i = 2; i < words.length; i++) {
+      const difference = index => Math.abs(words.slice(0, index).join(" ").length - words.slice(index).join(" ").length);
+      if (difference(i) < difference(split)) split = i;
+    }
+    const lines = [words.slice(0, split).join(" "), words.slice(split).join(" ")];
+    return { lines, fontSize: Math.min(106, Math.floor(730 / Math.max(...lines.map(line => line.length)))) };
+  }
+  return { lines: [title], fontSize: title.length <= 10 ? 106 : title.length <= 28 ? 76 : title.length <= 55 ? 62 : 44 };
 }
 
 export function SocialCard({ logo, photo, data }) {
   const isItem = Boolean(photo && data?.kind !== "global");
-  const title = cardText(data?.name || "", 100);
+  const title = titleLayout(cardText(data?.name || "", 100));
   return (
-    <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: navy, color: "#fff", fontFamily: "sans-serif", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 7, background: gold }} />
-      <div style={{ position: "absolute", top: 40, left: 64, display: "flex" }}>
-        <img src={logo} width={264} height={116} alt="" />
-      </div>
-      <div style={{ position: "absolute", top: 202, left: 64, width: isItem ? 560 : 600, display: "flex", flexDirection: "column" }}>
-        <div style={{ color: gold, fontSize: 17, letterSpacing: 3, marginBottom: 22 }}>
-          {isItem ? data.kind === "products" ? "EXPORT PRODUCT" : "EXPLORE OUR CATEGORIES" : "CONNECTING GLOBAL MARKETS"}
-        </div>
-        {isItem ? (
-          <div style={{ display: "flex", fontSize: title.length > 55 ? 42 : 54, lineHeight: 1.12, letterSpacing: -1.3, wordBreak: "break-word", maxHeight: 200, overflow: "hidden" }}>{title}</div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", fontSize: 76, lineHeight: 1.08, letterSpacing: -2 }}>
-            <span>Ramshel</span><span>Global Trade</span>
-          </div>
-        )}
-        <div style={{ display: "flex", marginTop: 24, fontSize: 23, color: "#c2d1da", lineHeight: 1.4 }}>
-          {isItem ? cardText(data.category || "Quality products. Worldwide supply.", 58) : "Import • Export • Global Sourcing"}
-        </div>
-      </div>
+    <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", background: black, color: "#fff", fontFamily: "Geist", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 7, background: yellow }} />
       {isItem ? (
-        <div style={{ position: "absolute", left: 704, top: 78, width: 432, height: 432, display: "flex", background: "#fff", padding: 20, borderRadius: 24, border: "1px solid #d7e1e7" }}>
-          <img src={photo} alt="" width={392} height={392} style={{ objectFit: "contain" }} />
+        <div style={{ width: "100%", height: "100%", display: "flex", position: "relative" }}>
+          <div style={{ position: "absolute", top: 46, left: 70, display: "flex" }}>
+            <img src={logo} width={370} height={163} alt="" />
+          </div>
+          <div style={{ position: "absolute", top: 242, left: 70, color: yellow, fontSize: 22, letterSpacing: 4 }}>
+            {data.kind === "products" ? "PRODUCT" : "PRODUCT CATEGORY"}
+          </div>
+          <div style={{ position: "absolute", top: 286, left: 66, width: 530, height: 214, display: "flex", flexDirection: "column", fontSize: title.fontSize, fontWeight: 800, lineHeight: 1.02, letterSpacing: -2.5, wordBreak: "break-word", overflow: "hidden" }}>
+            {title.lines.map((line, index) => <div key={index} style={{ display: "flex", flexShrink: 0 }}>{line}</div>)}
+          </div>
+          <div style={{ position: "absolute", left: 70, top: 518, width: 114, height: 8, background: yellow }} />
+          <div style={{ position: "absolute", left: 70, top: 546, color: yellow, fontSize: 22, letterSpacing: 4 }}>IMPORT AND EXPORT</div>
+          <div style={{ position: "absolute", left: 634, top: 60, width: 510, height: 510, display: "flex", background: "#fff", padding: 18, borderRadius: 26 }}>
+            <img src={photo} alt="" width={474} height={474} style={{ objectFit: "contain" }} />
+          </div>
         </div>
       ) : (
-        <div style={{ position: "absolute", right: 36, top: 54, display: "flex" }}><TradeGlobe /></div>
+        <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 70 }}>
+          <img src={logo} width={900} height={396} alt="" />
+          <div style={{ display: "flex", marginTop: 26, color: "#fff", fontSize: 56, fontWeight: 800, lineHeight: 1.2, letterSpacing: 12 }}>IMPORT AND EXPORT</div>
+        </div>
       )}
-      <div style={{ display: "flex", position: "absolute", bottom: 0, left: 64, right: 64, height: 76, alignItems: "center", justifyContent: "space-between", borderTop: "1px solid #365366", fontSize: 17, letterSpacing: 1.5 }}>
-        <span style={{ color: gold }}>FROM INDIA. TO THE WORLD.</span>
-        <span style={{ color: "#bccdd7", fontSize: 15 }}>RAMSHEL ENTERPRISES PVT LTD</span>
-      </div>
     </div>
   );
 }
 
+let fontsPromise;
+export function ogFonts() {
+  return fontsPromise ??= Promise.all([
+    readFile(join(process.cwd(), "public/assets/fonts/Geist-Regular.ttf")),
+    readFile(join(process.cwd(), "public/assets/fonts/Geist-ExtraBold.ttf")),
+  ]).then(([regular, bold]) => [
+    { name: "Geist", data: regular, weight: 400, style: "normal" },
+    { name: "Geist", data: bold, weight: 800, style: "normal" },
+  ]).catch(error => { fontsPromise = undefined; throw error; });
+}
+
 async function renderImage(data, photo = null) {
-  const logo = await logoData();
-  const response = new ImageResponse(<SocialCard logo={logo} photo={photo} data={data} />, OG_SIZE);
+  const [logo, fonts] = await Promise.all([logoData(), ogFonts()]);
+  const response = new ImageResponse(<SocialCard logo={logo} photo={photo} data={data} />, { ...OG_SIZE, fonts });
   // Consume the stream here so decoder/render failures reach the fallback handler.
   return Buffer.from(await response.arrayBuffer()).toString("base64");
 }

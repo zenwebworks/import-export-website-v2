@@ -1,6 +1,6 @@
 # Automatic social sharing images
 
-Every public page supplies Open Graph and Twitter large-card metadata. General pages use the global Ramshel logo/name card. Product and category detail pages use the same branded template with their saved name and photo. Images are 1200 × 630 PNGs; catalogue photos fit inside a square panel without cropping. No additional admin fields or manually designed product images are needed.
+Every public page supplies Open Graph and Twitter large-card metadata. Cards follow the approved black-and-yellow prototypes. General pages show the Ramshel logo raised above a larger white “IMPORT AND EXPORT” caption. Product and category cards show a bold, wrapping name, a yellow “PRODUCT” or “PRODUCT CATEGORY” label, and a square photo panel; their bottom caption stays yellow. Images are 1200 × 630 PNGs and photos fit without cropping. Names and photos remain automatic, with no additional admin fields or manually designed product images.
 
 ## Routes and artwork
 
@@ -9,6 +9,7 @@ Every public page supplies Open Graph and Twitter large-card metadata. General p
 - `lib/og-image.jsx`: shared artwork and PNG rendering, running in the Node runtime.
 - `lib/social.js`: complete social metadata and content-versioned image URLs.
 - `public/assets/og-logo.png`: lossless PNG conversion of the existing WebP logo for the renderer. It is explicitly included in deployment file tracing.
+- `public/assets/fonts/`: local Geist regular/extra-bold fonts from [Vercel's official font repository](https://github.com/vercel/geist-font), distributed with the SIL Open Font License. These are included in deployment file tracing and loaded only by the OG renderer, with no runtime font download.
 
 These routes require no login and sit outside the robots-disallowed `/api/` path. They do not read enquiries, quotes, sessions or other admin data. Invalid kinds/slugs and missing records return 404. Missing, unsupported or broken photos use the global brand image. A temporary database error returns an uncached global image.
 

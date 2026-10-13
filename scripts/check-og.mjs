@@ -50,7 +50,7 @@ for (const path of imageUrls) {
   assert.equal(bytes.readUInt32BE(16), 1200, path);
   assert.equal(bytes.readUInt32BE(20), 630, path);
   const repeat = await fetch(new URL(path, origin), { headers });
-  assert.deepEqual(Buffer.from(await repeat.arrayBuffer()), bytes, `${path}: repeated output`);
+  assert.ok(bytes.equals(Buffer.from(await repeat.arrayBuffer())), `${path}: repeated output differs`);
   console.log(`PASS PNG 1200x630, cached response ${path} (${bytes.length} bytes)`);
 }
 for (const path of ["/og/products/og-check-nonexistent-record-987654321", "/og/categories/og-check-nonexistent-record-987654321", "/og/admin/quotes", "/og/products/invalid_slug"]) {

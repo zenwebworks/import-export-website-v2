@@ -1,7 +1,7 @@
 const nextConfig = {
     allowedDevOrigins: ['192.168.1.28'],
     outputFileTracingIncludes: {
-        '/og/**': ['./public/assets/og-logo.png'],
+        '/og/**': ['./public/assets/og-logo.png', './public/assets/fonts/*.ttf'],
     },
     images: {
         qualities: [25, 50, 75, 82],
