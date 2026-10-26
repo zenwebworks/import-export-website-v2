@@ -1,7 +1,7 @@
 import { withSocialMetadata } from "@/lib/social";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, Clock3, FileText, Globe2, Handshake, Headset, Mail, MapPin, Package, Phone, ShieldCheck, Ship } from "lucide-react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ContactForm } from "@/components/site/ContactForm";
 import { SITE } from "@/lib/site";
@@ -31,7 +31,7 @@ const socialChannels = [
   { icon: FaFacebookF, title: "Facebook", href: SITE.socials.facebook, color: "#244b91" },
   { icon: FaInstagram, title: "Instagram", href: SITE.socials.instagram, color: "linear-gradient(35deg, #f4aa37, #df3267 52%, #774cc5)" },
   { icon: FaLinkedinIn, title: "LinkedIn", href: SITE.socials.linkedin, color: "#0a71a8" },
-  { icon: FaYoutube, title: "YouTube", href: SITE.socials.youtube, color: "#d91e24" },
+  { icon: FaXTwitter, title: "X (Twitter)", href: SITE.socials.twitter, color: "#000000" },
   { icon: FaWhatsapp, title: "WhatsApp", href: whatsappHref, color: "#239b4a" },
 ];
 

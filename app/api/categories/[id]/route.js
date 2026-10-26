@@ -1,3 +1,5 @@
+import { saveCatalogueRecord } from "@/lib/homepage-selection";
+import { homepagePatch } from "@/lib/homepage-route";
 import { invalidateCatalogue } from "@/lib/catalogue-cache";
 import { validObjectId } from "@/lib/request-params";
 import { NextResponse } from "next/server";
@@ -27,7 +29,7 @@ export async function PUT(request, { params }) {
     const existing = await Category.findById(id);
     if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
 
-    const category = await Category.findByIdAndUpdate(id, parsed.data, { new: true, runValidators: true }).lean();
+    const category = await saveCatalogueRecord(Category, parsed.data, id);
     if (!category) return NextResponse.json({ error: "Record no longer exists" }, { status: 404 });
     invalidateCatalogue();
     if (parsed.data.image && existing.image?.publicId && parsed.data.image?.publicId !== existing.image.publicId) {
@@ -36,7 +38,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ category: normalizeCategory(category) });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update category" }, { status: 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to update category" }, { status: error.status || 500 });
   }
 }
 
@@ -62,3 +64,5 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
   }
 }
+
+export const PATCH = homepagePatch(Category, normalizeCategory, "category");

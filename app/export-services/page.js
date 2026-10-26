@@ -1,4 +1,5 @@
 import { withSocialMetadata } from "@/lib/social";
+import { TRADE_MARKETS } from "@/lib/markets";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, FileText, Globe2, Network, PackageOpen, ShieldCheck } from "lucide-react";
@@ -75,10 +76,10 @@ const reasons = [
   "Customer-Centric Approach",
 ];
 
-// Figures supplied in the user's design reference; confirm before public launch.
+// Other figures supplied in the user's design reference; confirm before public launch.
 const statistics = [
   { value: "100", suffix: "+", label: "Products Exported" },
-  { value: "50", suffix: "+", label: "Countries Served" },
+  { value: String(TRADE_MARKETS.length), suffix: "", label: "Trade Markets" },
   { value: "500", suffix: "+", label: "Happy Clients" },
   { value: "99", suffix: "%", label: "On-Time Delivery" },
 ];

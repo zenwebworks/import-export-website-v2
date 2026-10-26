@@ -1,0 +1,10 @@
+.flag {
+  display: block;
+  width: 28px;
+  height: 21px;
+  flex: 0 0 28px;
+  object-fit: contain;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(128 128 128 / 25%);
+}

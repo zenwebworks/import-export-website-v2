@@ -1,7 +1,8 @@
 import { Globe2, Lock, ShieldCheck, Truck } from "lucide-react";
+import { TRADE_MARKETS } from "@/lib/markets";
 
 const items = [
-  { icon: Globe2, title: "Worldwide Export Support", desc: "Shipping to 40+ countries" },
+  { icon: Globe2, title: "Worldwide Export Support", desc: `Trade support across ${TRADE_MARKETS.length} countries` },
   { icon: ShieldCheck, title: "Verified Product Quality", desc: "Certified suppliers only" },
   { icon: Lock, title: "Secure Business Process", desc: "Transparent trade terms" },
   { icon: Truck, title: "On-Time Delivery", desc: "Trusted logistics partners" },

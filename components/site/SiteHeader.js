@@ -4,7 +4,7 @@
 // import { usePathname } from "next/navigation";
 // import { useCallback, useEffect, useRef, useState } from "react";
 // import { ChevronDown, Globe, Mail, MapPin, Menu, Package, Phone, Truck, X } from "lucide-react";
-// import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+// import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 // import { Button } from "@/components/ui/button";
 // import { SITE } from "@/lib/site";
 // import { cn } from "@/lib/utils";
@@ -43,17 +43,17 @@
 // ];
 
 // const SOCIAL_LINKS = [
-//   { key: "facebook", label: "Facebook", href: SITE.facebook, bg: "#1877F2", Icon: FaFacebookF },
-//   { key: "linkedin", label: "LinkedIn", href: SITE.linkedin, bg: "#0A66C2", Icon: FaLinkedinIn },
+//   { key: "facebook", label: "Facebook", href: SITE.socials.facebook, bg: "#1877F2", Icon: FaFacebookF },
+//   { key: "linkedin", label: "LinkedIn", href: SITE.socials.linkedin, bg: "#0A66C2", Icon: FaLinkedinIn },
 //   {
 //     key: "instagram",
 //     label: "Instagram",
-//     href: SITE.instagram,
+//     href: SITE.socials.instagram,
 //     bg: "linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)",
 //     Icon: FaInstagram,
 //   },
-//   { key: "youtube", label: "YouTube", href: SITE.youtube, bg: "#FF0000", Icon: FaYoutube },
-//   { key: "whatsapp", label: "WhatsApp", href: SITE.whatsapp, bg: "#25D366", Icon: FaWhatsapp },
+//   { key: "twitter", label: "X (Twitter)", href: SITE.socials.twitter, bg: "#000000", Icon: FaXTwitter },
+//   { key: "whatsapp", label: "WhatsApp", href: SITE.whatsappHref, bg: "#25D366", Icon: FaWhatsapp },
 // ];
 
 // function InfoBadge({ icon: Icon, href, children }) {
@@ -516,7 +516,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronRight, Globe, Handshake, Mail, MapPin, Menu, Package, Phone, Truck, X } from "lucide-react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -555,17 +555,17 @@ const NAV_ITEMS = [
 ];
 
 const SOCIAL_LINKS = [
-  { key: "facebook", label: "Facebook", href: SITE.facebook, bg: "#1877F2", Icon: FaFacebookF },
-  { key: "linkedin", label: "LinkedIn", href: SITE.linkedin, bg: "#0A66C2", Icon: FaLinkedinIn },
+  { key: "facebook", label: "Facebook", href: SITE.socials.facebook, bg: "#1877F2", Icon: FaFacebookF },
+  { key: "linkedin", label: "LinkedIn", href: SITE.socials.linkedin, bg: "#0A66C2", Icon: FaLinkedinIn },
   {
     key: "instagram",
     label: "Instagram",
-    href: SITE.instagram,
+    href: SITE.socials.instagram,
     bg: "linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)",
     Icon: FaInstagram,
   },
-  { key: "youtube", label: "YouTube", href: SITE.youtube, bg: "#FF0000", Icon: FaYoutube },
-  { key: "whatsapp", label: "WhatsApp", href: SITE.whatsapp, bg: "#25D366", Icon: FaWhatsapp },
+  { key: "twitter", label: "X (Twitter)", href: SITE.socials.twitter, bg: "#000000", Icon: FaXTwitter },
+  { key: "whatsapp", label: "WhatsApp", href: SITE.whatsappHref, bg: "#25D366", Icon: FaWhatsapp },
 ];
 
 // Shared so the desktop header and the mobile full-screen nav can never visually drift apart.

@@ -23,6 +23,8 @@ import {
   Utensils,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TRADE_MARKETS } from "@/lib/markets";
+import { CountryFlag } from "@/components/site/CountryFlag";
 
 export const metadata = withSocialMetadata({
   title: "Global Sourcing Services",
@@ -106,17 +108,6 @@ const businessTypes = [
   { icon: Utensils, label: "Restaurants & Food Businesses" },
   { icon: UserCheck, label: "Small Business Owners" },
   { icon: ShoppingBag, label: "Emerging Brands" },
-];
-
-const markets = [
-  "Middle East",
-  "Africa",
-  "Europe",
-  "United Kingdom",
-  "Southeast Asia",
-  "North America",
-  "Australia",
-  "Other International Markets",
 ];
 
 export default function SourcingPage() {
@@ -249,8 +240,11 @@ export default function SourcingPage() {
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Serving sourcing requirements in:</p>
             <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-              {markets.map((market) => (
-                <CheckItem key={market}>{market}</CheckItem>
+              {TRADE_MARKETS.map((market) => (
+                <li key={market.code} className="flex items-start gap-2 text-sm font-semibold text-muted-foreground">
+                  <CountryFlag market={market} />
+                  <span>{market.name}</span>
+                </li>
               ))}
             </ul>
             <div className="mt-7 overflow-hidden rounded-md border border-border bg-white p-3 sm:p-4">

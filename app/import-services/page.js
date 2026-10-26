@@ -5,6 +5,7 @@ import { ArrowRight, FileText, Globe2, Network, PackageOpen, ShieldCheck } from 
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/site";
 import { IMPORT_CATEGORIES, IMPORT_MARKETS } from "@/lib/import-services";
+import { CountryFlag } from "@/components/site/CountryFlag";
 import styles from "./import-services.module.css";
 
 const description = "Connect your business in India with global products through trusted sourcing, supplier verification, quality checks, import documentation and shipping support.";
@@ -111,7 +112,7 @@ export default function ImportServicesPage() {
             <div className={styles.marketsContent}>
               <ul className={styles.marketList}>
                 {IMPORT_MARKETS.map((market) => (
-                  <li key={market.code}><span aria-hidden="true">{market.code}</span>{market.name}</li>
+                  <li key={market.code}><CountryFlag market={market} /><span>{market.name}</span></li>
                 ))}
               </ul>
               <div className={styles.marketMap}>

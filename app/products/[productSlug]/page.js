@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Boxes, MessageCircle, MessageSquare, Package2, Phone, Star } from "lucide-react";
+import { Boxes, MessageCircle, MessageSquare, Package2, Phone } from "lucide-react";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { ProductEnquiryForm } from "@/components/site/ProductEnquiryForm";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,6 @@ export default async function ProductPage({ params }) {
             {product.category && <Link href={`/categories/${product.category.slug}`} className="text-xs font-semibold uppercase tracking-wider text-ocean hover:text-navy">{product.category.name}</Link>}
             <h1 className="mt-2 text-3xl font-bold leading-tight text-navy md:text-4xl">{product.name}</h1>
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              {product.featured && <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/15 px-3 py-1 text-xs font-semibold text-gold-foreground/90"><Star className="h-3 w-3 text-gold" /> Featured Product</span>}
               {product.show_on_homepage && <span className="rounded-full border border-navy/10 bg-navy/5 px-3 py-1 text-xs font-semibold text-navy">Popular Export</span>}
             </div>
             <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{product.description}</p>

@@ -1,5 +1,7 @@
+import { saveCatalogueRecord } from "@/lib/homepage-selection";
+import { HOMEPAGE_LIMIT, homepageFilter } from "@/lib/homepage-settings";
 import { invalidateCatalogue } from "@/lib/catalogue-cache";
-import { parsePagination, validObjectId } from "@/lib/request-params";
+import { parsePagination, validObjectId, escapeRegex } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
@@ -20,24 +22,22 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const { page, limit } = parsePagination(searchParams, 12, 100);
     const category = searchParams.get("category") || "";
-    const search = searchParams.get("search") || "";
-    const featured = searchParams.get("featured") || "";
+    const search = (searchParams.get("search") || "").trim().slice(0, 200);
     const sort = searchParams.get("sort") || "newest";
 
-    const query = {};
+    const query = homepageFilter(searchParams.get("homepage") || "");
     if (category) query.category = await categoryFilter(category);
-    if (search) query.$text = { $search: search };
-    if (featured === "featured") query.featured = true;
-    if (featured === "homepage") query.showOnHomepage = true;
+    if (search) query.$or = ["name", "description"].map(field => ({ [field]: { $regex: escapeRegex(search), $options: "i" } }));
 
     const skip = (page - 1) * limit;
     const sortSpec = sort === "az" ? { name: 1, _id: 1 } : { createdAt: -1, _id: -1 };
-    const [products, total] = await Promise.all([
+    const [products, total, homepageCount] = await Promise.all([
       Product.find(query).populate("category", "name slug image description").sort(sortSpec).skip(skip).limit(limit).lean(),
       Product.countDocuments(query),
+      Product.countDocuments({ showOnHomepage: true }),
     ]);
 
-    return NextResponse.json({ products: products.map(normalizeProduct), total, page, totalPages: Math.ceil(total / limit) });
+    return NextResponse.json({ products: products.map(normalizeProduct), total, page, totalPages: Math.ceil(total / limit), homepageCount, homepageLimit: HOMEPAGE_LIMIT }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return NextResponse.json({ error: error.status === 400 ? error.message : "Failed to fetch products" }, { status: error.status === 400 ? 400 : 500 });
   }
@@ -57,11 +57,11 @@ export async function POST(request) {
     if (existing) return NextResponse.json({ error: "A product with this slug already exists" }, { status: 409 });
 
     if (!validObjectId(parsed.data.category) || !await Category.exists({ _id: parsed.data.category })) return NextResponse.json({ error: "Choose an existing category" }, { status: 400 });
-    const product = await Product.create(parsed.data);
-    await product.populate("category", "name slug image description");
+    const product = await saveCatalogueRecord(Product, parsed.data);
+    await Product.populate(product, { path: "category", select: "name slug image description" });
     invalidateCatalogue();
-    return NextResponse.json({ product: normalizeProduct(product.toObject()) }, { status: 201 });
+    return NextResponse.json({ product: normalizeProduct(product) }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create product" }, { status: error.status === 400 ? 400 : 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to create product" }, { status: error.status || 500 });
   }
 }

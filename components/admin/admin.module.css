@@ -27,6 +27,20 @@
 .search { display: flex; flex: 1; min-width: min(100%,240px); align-items: center; gap: 8px; }
 .search input { min-width: 0; height: 40px; background: #f8fafb; }
 .toolbar select { height: 40px; width: auto; max-width: 100%; min-width: 150px; background: #f8fafb; }
+.catalogueToolbar { align-items: end; }
+.catalogueToolbar .search { flex-basis: 260px; }
+.catalogueToolbar input, .catalogueToolbar select, .catalogueToolbar button { min-height: 44px; }
+.catalogueFilter { display: grid; flex: 1 1 160px; min-width: 0; gap: 6px; font-size: 11px; font-weight: 600; }
+.catalogueFilter select { width: 100%; min-width: 0; }
+.catalogueResults { display: flex; flex-basis: 100%; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; color: var(--muted-foreground); font-size: 12px; }
+.catalogueResults button { color: var(--ocean); text-decoration: underline; text-underline-offset: 3px; }
+.homepageSwitch { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; cursor: pointer; }
+.homepageSwitch:disabled { cursor: default; opacity: .55; }
+.homepageSwitch:focus-visible, .catalogueResults button:focus-visible { outline: 2px solid var(--ocean); outline-offset: 4px; border-radius: 4px; }
+.switchTrack { display: flex; align-items: center; flex-shrink: 0; width: 40px; height: 24px; padding: 3px; border-radius: 20px; background: #95a4ae; }
+.switchTrack > span { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: white; }
+.homepageSwitch[aria-checked="true"] .switchTrack { background: #17684e; }
+.homepageSwitch[aria-checked="true"] .switchTrack > span { transform: translateX(16px); }
 .table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
 .table th { background: #f8fafb; padding: 13px 20px; font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: #617282; }
 .table td { padding: 16px 20px; border-top: 1px solid #edf0f3; vertical-align: middle; overflow-wrap: anywhere; }
@@ -86,6 +100,10 @@
   .loginMobileLogo img { width: 190px; height: 80px; margin: auto; object-fit: contain; }
 }
 @media (max-width: 767px) {
+  .catalogueToolbar .search { flex-basis: 100%; }
+  .catalogueFilter { flex-basis: 100%; }
+  .catalogueToolbar .search button { flex-shrink: 0; }
+  .table td .actions button { min-height: 44px; min-width: 44px; }
   .main { padding: 24px 16px 40px; }
   .toolbar { padding: 14px; }
   .toolbar select { width: 100%; }

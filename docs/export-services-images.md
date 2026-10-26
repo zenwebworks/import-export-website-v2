@@ -59,4 +59,4 @@ Constraints: no logos, no visible text, no watermarks, no visible interfaces; pa
 
 ## Content note
 
-The four headline statistics (100+ products, 50+ countries, 500+ clients, 99% on-time delivery) are transcribed from the supplied design reference. They are not independently verified and should be confirmed before a public launch.
+The trade market total is derived from the shared country list in `lib/markets.js`. The other headline statistics (100+ products, 500+ clients, 99% on-time delivery) are transcribed from the supplied design reference. They are not independently verified and should be confirmed before a public launch.

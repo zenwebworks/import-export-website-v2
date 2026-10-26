@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaYoutube } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { SITE } from "@/lib/site";
 
 export function SiteFooter() {
@@ -14,7 +14,7 @@ export function SiteFooter() {
       bg: "linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)",
       icon: FaInstagram,
     },
-    { href: "#", label: "YouTube", bg: "#FF0000", icon: FaYoutube },
+    { href: SITE.socials.twitter, label: "X (Twitter)", bg: "#000000", icon: FaXTwitter },
     { href: SITE.whatsappHref, label: "WhatsApp", bg: "#25D366", icon: FaWhatsapp },
   ];
 
@@ -145,7 +145,7 @@ function ContactLine({ icon: Icon, children }) {
   return (
     <li className="flex gap-3">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-      <span>{children}</span>
+      <span className="min-w-0 break-words">{children}</span>
     </li>
   );
 }

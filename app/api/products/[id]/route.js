@@ -1,3 +1,5 @@
+import { saveCatalogueRecord } from "@/lib/homepage-selection";
+import { homepagePatch } from "@/lib/homepage-route";
 import { invalidateCatalogue } from "@/lib/catalogue-cache";
 import Category from "@/models/Category";
 import { validObjectId } from "@/lib/request-params";
@@ -28,9 +30,8 @@ export async function PUT(request, { params }) {
     const existing = await Product.findById(id);
     if (!existing) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
-    const product = await Product.findByIdAndUpdate(id, parsed.data, { new: true, runValidators: true })
-      .populate("category", "name slug image description")
-      .lean();
+    const product = await saveCatalogueRecord(Product, parsed.data, id);
+    await Product.populate(product, { path: "category", select: "name slug image description" });
     if (!product) return NextResponse.json({ error: "Record no longer exists" }, { status: 404 });
     invalidateCatalogue();
     if (parsed.data.image && existing.image?.publicId && parsed.data.image?.publicId !== existing.image.publicId) {
@@ -39,7 +40,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ product: normalizeProduct(product) });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update product" }, { status: 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to update product" }, { status: error.status || 500 });
   }
 }
 
@@ -62,3 +63,5 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: "Failed to delete product" }, { status: 500 });
   }
 }
+
+export const PATCH = homepagePatch(Product, normalizeProduct, "product");

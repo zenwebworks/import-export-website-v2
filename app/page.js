@@ -14,7 +14,6 @@ import {
   Globe2,
   Handshake,
   Leaf,
-  MapPinned,
   Package,
   PackageCheck,
   PackageOpen,
@@ -27,7 +26,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
-import { getAllCategories, getHomepageProducts } from "@/lib/data";
+import { getHomepageCategories, getHomepageProducts } from "@/lib/data";
+import { TRADE_MARKETS } from "@/lib/markets";
+import { CountryFlag } from "@/components/site/CountryFlag";
 import catalogueStyles from "./home-catalogue.module.css";
 
 export const metadata = withSocialMetadata({
@@ -77,8 +78,6 @@ const importServices = [
   "Door-to-door delivery support",
 ];
 
-const marketLinks = ["Global Link", "Africa", "Europe", "UK", "Southeast Asia", "North America", "Australia", "Other Markets"];
-
 const collaborationPoints = [
   "Export support for small businesses",
   "Global buyer access",
@@ -89,8 +88,8 @@ const collaborationPoints = [
 
 export default async function HomePage() {
   const [categories, featured] = await Promise.all([
-    getAllCategories(),
-    getHomepageProducts(10),
+    getHomepageCategories(),
+    getHomepageProducts(),
   ]);
 
   return (
@@ -104,7 +103,7 @@ export default async function HomePage() {
             title="Featured Categories"
           />
           <div className={catalogueStyles.showcaseGrid}>
-            {categories.slice(0, 10).map((category) => (
+            {categories.map((category) => (
               <HomeCatalogueTile
                 key={category.id}
                 name={category.name}
@@ -251,19 +250,19 @@ export default async function HomePage() {
         <div className="grid gap-3 lg:grid-cols-[0.82fr_1.18fr]">
           <ImageInfoCard
             title="Global Markets"
-            text="Reach buyers, suppliers and distributors across major international trade regions."
+            text="Connect with buyers, suppliers and distributors across our international trade markets."
             image="/assets/home-global-markets.png"
             href="/contact"
             cta="Explore Markets"
           >
-            <div className="mt-5 grid grid-cols-2 gap-2">
-              {marketLinks.map((market) => (
-                <span key={market} className="flex items-center gap-2 text-xs font-semibold text-white/82">
-                  <MapPinned className="h-3.5 w-3.5 shrink-0 text-gold" />
-                  {market}
-                </span>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {TRADE_MARKETS.map((market) => (
+                <li key={market.code} className="flex items-start gap-2 text-xs font-semibold text-white/82">
+                  <CountryFlag market={market} />
+                  <span>{market.name}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </ImageInfoCard>
 
           <ImageInfoCard

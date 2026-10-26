@@ -55,6 +55,9 @@ const values = [
 
 const registrations = ["CIN", "PAN", "GST", "IEC", "FSSAI", "MSME", "RCMC", "AD Code", "ICEGATE"];
 
+// Temporarily keep the advisor section and its image off the public page.
+const SHOW_LEGAL_ADVISOR = false;
+
 const memberships = [
   "Export Promotion Council",
   "Chamber of Commerce",
@@ -126,7 +129,7 @@ export default function AboutPage() {
             </div>
           </article>
 
-          <article className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
+          {SHOW_LEGAL_ADVISOR && <article className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
             <div className="grid gap-0 md:grid-cols-[minmax(240px,0.58fr)_minmax(0,1fr)]">
               <div className="flex items-center justify-center bg-surface p-4 sm:p-5 lg:p-6">
                 <img
@@ -151,7 +154,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-          </article>
+          </article>}
         </div>
       </section>
 
@@ -202,12 +205,15 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
-          <div className="overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
+          <div className="self-center overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
             <img
-              src="/assets/about-registrations-trade.png"
-              alt="Trade registrations and international documentation"
+              src="/assets/about-registrations-ramshel.jpeg"
+              alt="Ramshel Global Enterprises reception with a gold world map and company logo"
+              width={1536}
+              height={1024}
               loading="lazy"
-              className="h-full min-h-[300px] w-full object-cover"
+              decoding="async"
+              className="block h-auto w-full"
             />
           </div>
         </div>

@@ -12,7 +12,6 @@ const ProductSchema = new mongoose.Schema(
     showOnHomepage: { type: Boolean, default: false },
     description: { type: String, default: "" },
     packagingDetails: { type: String, default: "" },
-    featured: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

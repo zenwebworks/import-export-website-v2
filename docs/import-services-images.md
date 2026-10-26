@@ -97,6 +97,6 @@ Constraints: no text, no labels, no logos, no watermarks, no UI; no people.
 ## Content and behaviour
 
 - The reference's tagline is adapted to **From the world. To India.**, and **Global Supplier Connection** is used to describe import sourcing accurately.
-- Categories and markets follow the supplied reference. Confirm actual sourcing availability before public launch.
-- Country codes are used with readable country names so the market list does not depend on flag emoji support.
+- Categories follow the supplied reference. Markets use the shared ten-country list in `lib/markets.js`.
+- Locally hosted SVG flags accompany full country names and render independently of emoji fonts. Assets come from the MIT-licensed [flag-icons project](https://github.com/lipis/flag-icons); the license is retained in `public/assets/flags/LICENSE.txt`.
 - Category links preserve their selection in the import enquiry. Existing export enquiries retain their original behaviour. No database schema or API changes were needed.
