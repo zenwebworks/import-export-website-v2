@@ -1,5 +1,4 @@
 import { withSocialMetadata } from "@/lib/social";
-import Image from "next/image";
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, Building2, Clock3, FileText, Globe2, Handshake, Headset, Mail, MapPin, Package, Phone, ShieldCheck, Ship } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { Breadcrumbs } from "@/components/site/Breadcrumbs";
@@ -24,7 +23,6 @@ const contactChannels = [
   { icon: Mail, title: "Business", subtitle: "Email", href: `mailto:${SITE.email}` },
   { icon: Globe2, title: "Our", subtitle: "Website", href: website, external: true },
   { icon: Building2, title: "India", subtitle: "Office", href: "#location" },
-  { icon: Globe2, title: "Global Trade", subtitle: "Support", href: "#business-enquiry" },
 ];
 
 const socialChannels = [
@@ -73,9 +71,6 @@ export default function ContactPage() {
               <Detail icon={Globe2} label="Location">India</Detail>
               <Detail icon={Phone} label="Phone / WhatsApp"><a href={SITE.phoneHref}>{SITE.phone}</a></Detail>
               <Detail icon={Mail} label="Email"><a href={`mailto:${SITE.email}`}>{SITE.email}</a></Detail>
-              <Detail icon={Globe2} label="Website">
-                <a href={website} target="_blank" rel="noopener noreferrer">www.ramshelglobaltrade.com</a>
-              </Detail>
               <Detail icon={MapPin} label="Office">
                 <a href={directionsHref} target="_blank" rel="noopener noreferrer">{SITE.address}</a>
               </Detail>
@@ -90,6 +85,17 @@ export default function ContactPage() {
             <p className={styles.formNote}><ShieldCheck size={16} aria-hidden="true" /> Your details are only used to respond to your enquiry.</p>
           </section>
         </div>
+
+        <section className={`${styles.panel} ${styles.enquiriesPanel}`} aria-labelledby="trade-enquiries-heading">
+          <PanelHeading icon={Handshake} id="trade-enquiries-heading">Trade enquiries & business collaboration</PanelHeading>
+          <p className={styles.panelDescription}>Export from India, source from global markets or grow your small business with our trade network.</p>
+          <div className={styles.enquiryGrid}>
+            <EnquiryGroup icon={Ship} title="Export enquiries" subtitle="Export your products from India" points={exportPoints} />
+            <EnquiryGroup icon={Package} title="Import enquiries" subtitle="Source products from global markets" points={importPoints} />
+            <EnquiryGroup icon={Handshake} title="Small business owner collaboration" subtitle="Your ambition. Our trade network." points={collaborationPoints} />
+          </div>
+          <EnquiryLink>Discuss your requirements</EnquiryLink>
+        </section>
 
         <div className={styles.contentGrid}>
           <div className={styles.column}>
@@ -127,21 +133,9 @@ export default function ContactPage() {
               <p className={styles.responseNote}><Clock3 size={15} aria-hidden="true" /> We usually reply within one business day.</p>
             </section>
 
-            <section className={styles.panel} aria-labelledby="collaboration-heading">
-              <PanelHeading icon={Handshake} id="collaboration-heading">Small business owner collaboration</PanelHeading>
-              <p className={styles.panelDescription}>Your ambition. Our trade network. Let’s grow together.</p>
-              <div className={styles.collaborationBody}>
-                <PointList points={collaborationPoints} />
-                <Image src="/assets/contact-collaboration.webp" alt="Navy and gold handshake illustration representing business collaboration" width={640} height={640} sizes="(max-width: 479px) 200px, (max-width: 899px) 35vw, 245px" className={styles.collaborationImage} />
-              </div>
-              <EnquiryLink>Collaborate with us</EnquiryLink>
-            </section>
           </div>
 
           <div className={styles.column}>
-            <TradePanel icon={Ship} id="export-heading" title="Export enquiries" subtitle="Export your products from India" points={exportPoints} image="/assets/contact-export.webp" imageAlt="Cargo ship carrying containers for international exports" action="Export with us" />
-            <TradePanel icon={Package} id="import-heading" title="Import enquiries" subtitle="Source products from global markets" points={importPoints} image="/assets/contact-import.webp" imageAlt="Globe and shipping boxes representing global product sourcing" action="Import with us" />
-
             <section id="location" tabIndex={-1} className={`${styles.panel} ${styles.officePanel}`} aria-labelledby="office-heading">
               <PanelHeading icon={MapPin} id="office-heading">Office / location</PanelHeading>
               <div className={styles.officeLayout}>
@@ -190,17 +184,12 @@ function EnquiryLink({ children }) {
   return <a href="#business-enquiry" className={styles.enquiryLink}>{children}<ArrowRight size={15} aria-hidden="true" /></a>;
 }
 
-function TradePanel({ icon, id, title, subtitle, points, image, imageAlt, action }) {
+function EnquiryGroup({ icon: Icon, title, subtitle, points }) {
   return (
-    <section className={styles.panel} aria-labelledby={id}>
-      <PanelHeading icon={icon} id={id}>{title}</PanelHeading>
-      <h3 className={styles.tradeSubtitle}>{subtitle}</h3>
-      <div className={styles.tradeBody}>
-        <PointList points={points} />
-        <Image src={image} alt={imageAlt} width={640} height={640} sizes="(max-width: 479px) 45vw, (max-width: 899px) 40vw, 235px" className={styles.tradeImage} />
-      </div>
-      <EnquiryLink>{action}</EnquiryLink>
-    </section>
+    <div className={styles.enquiryGroup}>
+      <h3><Icon size={20} aria-hidden="true" />{title}</h3>
+      <p>{subtitle}</p>
+      <PointList points={points} />
+    </div>
   );
 }
-

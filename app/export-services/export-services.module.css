@@ -166,11 +166,17 @@
   gap: 18px;
 }
 
+.servicesGrid {
+  padding-top: 26px;
+  column-gap: 12px;
+  row-gap: 44px;
+}
+
 .serviceCard {
   min-width: 0;
-  padding: 28px 18px 25px;
+  padding: 0 16px 24px;
   border: 1px solid #e8ebed;
-  border-radius: 9px;
+  border-radius: 5px;
   background: #fff;
   box-shadow: 0 3px 9px rgb(10 30 40 / 3%);
   text-align: center;
@@ -178,38 +184,37 @@
 
 .serviceIcon {
   display: grid;
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 22px;
+  width: 62px;
+  height: 62px;
+  margin: -26px auto 12px;
   place-items: center;
-  border: 1px solid #bcaa7c;
+  border: 2px solid #efc77c;
   border-radius: 50%;
-  background: #fcfbf7;
-  box-shadow: inset 0 0 0 5px #fff;
+  background: #fff;
 }
 
 .serviceIcon svg {
   width: 32px;
   height: 32px;
-  color: #34414a;
+  color: var(--navy);
 }
 
 .serviceCard h3 {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  min-height: 48px;
+  min-height: 2.8em;
   font-size: 15px;
   font-weight: 800;
-  line-height: 1.55;
+  line-height: 1.4;
 }
 
 .serviceCard p {
   max-width: 195px;
-  margin: 12px auto 0;
+  margin: 10px auto 0;
   color: #606b73;
-  font-size: 12px;
-  line-height: 1.9;
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .additionalSection {
@@ -475,9 +480,7 @@
     justify-self: center;
   }
 
-  .serviceCard {
-    padding: 24px 16px;
-  }
+  .servicesGrid { row-gap: 44px; }
 
   .serviceCard h3 {
     min-height: 46px;
@@ -487,7 +490,7 @@
   .serviceIcon {
     width: 62px;
     height: 62px;
-    margin-bottom: 17px;
+    margin-bottom: 12px;
   }
 
   .whyTop {
@@ -638,6 +641,7 @@
 }
 
 @media (max-width: 479px) {
+  .servicesGrid { padding-top: 0; }
   .servicesGrid,
   .additionalGrid {
     grid-template-columns: minmax(0, 1fr);
@@ -680,7 +684,7 @@
   .serviceCard p {
     max-width: none;
     margin: 0;
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.7;
   }
 

@@ -47,10 +47,16 @@ export default async function ProductPage({ params }) {
           <div>
             {product.category && <Link href={`/categories/${product.category.slug}`} className="text-xs font-semibold uppercase tracking-wider text-ocean hover:text-navy">{product.category.name}</Link>}
             <h1 className="mt-2 text-3xl font-bold leading-tight text-navy md:text-4xl">{product.name}</h1>
+            {product.hsCode && (
+              <dl className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm">
+                <dt className="font-semibold text-muted-foreground">HS Code</dt>
+                <dd className="break-all font-semibold tracking-wide text-navy">{product.hsCode}</dd>
+              </dl>
+            )}
             <div className="mt-5 flex flex-wrap items-center gap-2">
               {product.show_on_homepage && <span className="rounded-full border border-navy/10 bg-navy/5 px-3 py-1 text-xs font-semibold text-navy">Popular Export</span>}
             </div>
-            <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{product.description}</p>
+            <p className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{product.description || "Contact our export team for full product details."}</p>
             {product.packaging_details && (
               <div className="mt-6 flex gap-3 rounded-xl border border-border bg-card p-4">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary text-ocean"><Boxes className="h-4 w-4" /></span>
@@ -65,21 +71,15 @@ export default async function ProductPage({ params }) {
               <Button asChild variant="navy" size="lg"><a href={waLink(`Hello, I'd like to enquire about "${product.name}".`)} target="_blank" rel="noopener"><MessageCircle className="h-4 w-4" /> WhatsApp</a></Button>
               <Button asChild variant="outline" size="lg"><a href={SITE.phoneHref}><Phone className="h-4 w-4" /> Call Supplier</a></Button>
             </div>
+            <p className="mt-6 text-xs italic text-muted-foreground">Packaging and availability may change based on order requirements. Please confirm final details with our export team.</p>
           </div>
         </div>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[2fr_1fr]">
-          <div>
-            <h2 className="text-2xl font-bold text-navy">Product Overview</h2>
-            <p className="mt-4 whitespace-pre-line leading-relaxed text-muted-foreground">{product.description || "Contact our export team for full product details."}</p>
-            <p className="mt-6 text-xs italic text-muted-foreground">Disclaimer: packaging and availability may change based on order requirements. Please confirm final details with our export team.</p>
-          </div>
-          <aside className="h-fit rounded-2xl border border-border bg-card p-6 shadow-card-soft lg:sticky lg:top-24">
-            <h3 className="text-lg font-bold text-navy">Send a Product Enquiry</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Get a customised quote for {product.name}.</p>
-            <div className="mt-5"><ProductEnquiryForm productName={product.name} productId={product._id || product.id} /></div>
-          </aside>
-        </div>
+        <section aria-labelledby="product-enquiry-heading" className="mt-10 rounded-2xl border border-border bg-card p-5 shadow-card-soft sm:p-8 lg:mt-14">
+          <h2 id="product-enquiry-heading" className="text-2xl font-bold text-navy">Send a Product Enquiry</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Get a customised quote for {product.name}.</p>
+          <div className="mt-6"><ProductEnquiryForm productName={product.name} productId={product._id || product.id} /></div>
+        </section>
       </section>
     </>
   );

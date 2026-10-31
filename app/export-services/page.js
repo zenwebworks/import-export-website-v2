@@ -2,7 +2,8 @@ import { withSocialMetadata } from "@/lib/social";
 import { TRADE_MARKETS } from "@/lib/markets";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, FileText, Globe2, Network, PackageOpen, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, FileText, Globe, Handshake, Plane, ShieldCheck } from "lucide-react";
+import { ExportPackaging } from "@/components/site/ExportPackaging";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/site";
 import styles from "./export-services.module.css";
@@ -33,29 +34,29 @@ const heroBenefits = ["Trusted Sourcing", "Global Network", "Quality Assured", "
 
 const services = [
   {
-    icon: PackageOpen,
-    title: "Product Sourcing",
-    description: "We source quality products from trusted suppliers across India.",
-  },
-  {
-    icon: Globe2,
-    title: "Global Buyer Connection",
-    description: "Connecting with international buyers and new business opportunities.",
-  },
-  {
-    icon: Network,
-    title: "Supplier & Manufacturer Network",
-    description: "A strong network of verified manufacturers and reliable suppliers.",
+    icon: Globe,
+    title: "Global Market Access",
+    description: "Connect with verified international buyers across global markets.",
   },
   {
     icon: ShieldCheck,
-    title: "Quality & Product Verification",
-    description: "Quality inspection and verification to meet global standards.",
+    title: "Quality Assurance",
+    description: "We ensure your products meet international standards and buyer requirements.",
   },
   {
     icon: FileText,
-    title: "Export Pricing & Quotation",
-    description: "Competitive pricing with transparent quotations and a clear cost breakdown.",
+    title: "Export Documentation",
+    description: "Complete support with all export documentation and compliance formalities.",
+  },
+  {
+    icon: Plane,
+    title: "Logistics & Shipping",
+    description: "Reliable freight forwarding, customs clearance and timely delivery.",
+  },
+  {
+    icon: Handshake,
+    title: "Buyer Support",
+    description: "From enquiry to delivery, we are with you at every step.",
   },
 ];
 
@@ -158,6 +159,8 @@ export default function ExportServicesPage() {
             ))}
           </div>
         </section>
+
+        <ExportPackaging />
 
         <section className={styles.whySection} aria-labelledby="why-ramshel">
           <div className={styles.whyTop}>

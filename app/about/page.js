@@ -6,8 +6,6 @@ import {
   CheckCircle2,
   ClipboardCheck,
   Diamond,
-  FileCheck2,
-  Globe2,
   Handshake,
   Rocket,
   Scale,
@@ -53,18 +51,8 @@ const values = [
   { icon: Handshake, label: "Responsibility" },
 ];
 
-const registrations = ["CIN", "PAN", "GST", "IEC", "FSSAI", "MSME", "RCMC", "AD Code", "ICEGATE"];
-
 // Temporarily keep the advisor section and its image off the public page.
 const SHOW_LEGAL_ADVISOR = false;
-
-const memberships = [
-  "Export Promotion Council",
-  "Chamber of Commerce",
-  "Trade Association",
-  "Business Network",
-  "Industry Association",
-];
 
 export default function AboutPage() {
   return (
@@ -89,8 +77,10 @@ export default function AboutPage() {
                 </div>
               </div>
               <img
-                src="/assets/about-company-office.png"
-                alt=""
+                src="/assets/about-registrations-ramshel.jpeg"
+                alt="Ramshel Global Enterprises reception with a gold world map and company logo"
+                width={1536}
+                height={1024}
                 loading="lazy"
                 className="aspect-[16/10] w-full object-cover lg:h-full lg:min-h-[360px] lg:aspect-auto"
               />
@@ -188,54 +178,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="container-x py-10 sm:py-12 lg:py-14">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <SectionTitle icon={FileCheck2} title="Registrations & Licences" />
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Contact our team for registration, licensing and documentation information relevant
-              to your trade requirements.
-            </p>
-            <div className="mt-6 grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-3 xl:grid-cols-5">
-              {registrations.map((item) => (
-                <div key={item} className="rounded-md border border-border bg-white p-3 text-center shadow-card-soft">
-                  <FileCheck2 className="mx-auto h-6 w-6 text-ocean" />
-                  <p className="mt-2 text-xs font-extrabold uppercase text-navy">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="self-center overflow-hidden rounded-md border border-border bg-white shadow-card-soft">
-            <img
-              src="/assets/about-registrations-ramshel.jpeg"
-              alt="Ramshel Global Enterprises reception with a gold world map and company logo"
-              width={1536}
-              height={1024}
-              loading="lazy"
-              decoding="async"
-              className="block h-auto w-full"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-border bg-white py-10 sm:py-12 lg:py-14">
-        <div className="container-x">
-          <div className="mx-auto max-w-2xl text-center">
-            <SectionTitle icon={Handshake} title="Memberships & Associations" centered />
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              We value participation in reputable trade bodies and business networks that support
-              ethical, professional and growth-focused global commerce.
-            </p>
-          </div>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {memberships.map((item) => (
-              <div key={item} className="rounded-md border border-border bg-surface p-4 text-center">
-                <Globe2 className="mx-auto h-7 w-7 text-ocean" />
-                <h3 className="mt-3 text-sm font-extrabold text-navy">{item}</h3>
-              </div>
-            ))}
-          </div>
+      <section className="container-x py-10 sm:py-12 lg:py-14" aria-label="Registrations and trade associations">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <CredentialPanel
+            id="registrations"
+            title="Registrations & Licences"
+            image="/assets/about-registrations-logos.webp"
+            alt="CIN, PAN, GSTIN, IEC, FSSAI, MSME, RCMC, AD Code and ICEGATE"
+          />
+          <CredentialPanel
+            id="memberships"
+            title="Memberships & Associations"
+            image="/assets/about-memberships-logos.webp"
+            alt="FIEO, APEDA, DGFT, FSSAI, Chambers of Commerce, Export Promotion Councils and Trade Associations"
+          />
         </div>
       </section>
     </>
@@ -266,6 +222,17 @@ function InfoPanel({ icon: Icon, title, text, items }) {
           </li>
         ))}
       </ul>
+    </article>
+  );
+}
+
+function CredentialPanel({ id, title, image, alt }) {
+  return (
+    <article aria-labelledby={`${id}-heading`} className="min-w-0 overflow-hidden rounded-xl border border-gold/30 bg-[#fffdf7] shadow-card-soft">
+      <div className="border-b border-gold/20 px-5 py-5 sm:px-6">
+        <h2 id={`${id}-heading`} className="text-lg font-extrabold text-navy sm:text-xl">{title}</h2>
+      </div>
+      <img src={image} alt={alt} width={1536} height={1024} loading="lazy" decoding="async" className="block h-auto w-full" />
     </article>
   );
 }

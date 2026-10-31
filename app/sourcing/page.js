@@ -247,14 +247,20 @@ export default function SourcingPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-7 overflow-hidden rounded-md border border-border bg-white p-3 sm:p-4">
+            <figure className="mt-7 overflow-hidden rounded-md border border-[#323438] bg-[#0a0b0c]">
               <img
-                src="/assets/sourcing-global-markets-map.png"
-                alt="World map highlighting global sourcing markets"
+                src="/assets/sourcing-market-pins.webp"
+                alt="Navy world map with a yellow location pin for each of the ten sourcing markets listed above"
+                width={1774}
+                height={887}
                 loading="lazy"
-                className="mx-auto aspect-[16/8] w-full rounded-md object-contain"
+                className="block h-auto w-full"
               />
-            </div>
+              <figcaption className="flex items-center gap-2 border-t border-white/15 px-4 py-2 text-xs font-semibold text-white">
+                <span aria-hidden="true" className="h-3 w-3 rounded-sm bg-[#ffda36]" />
+                Sourcing markets
+              </figcaption>
+            </figure>
             <div className="mt-6 flex justify-center">
               <Button asChild variant="navy" className="rounded-md text-xs font-extrabold uppercase">
                 <Link href="/contact">

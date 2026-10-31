@@ -24,10 +24,11 @@ export function AdminCatalogue({ kind }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [homepage, setHomepage] = useState("");
+  const [sort, setSort] = useState(isProduct ? "newest" : "az");
   const [editing, setEditing] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [notice, setNotice] = useState("");
-  const query = useAdminQuery(kind, `/api/${kind}`, { page, limit: 15, search, homepage, ...(isProduct ? { category } : {}) });
+  const query = useAdminQuery(kind, `/api/${kind}`, { page, limit: 15, search, homepage, sort, ...(isProduct ? { category } : {}) });
   const categoryQuery = useAdminQuery("categories", "/api/categories");
   const save = useAdminMutation(kind);
   const remove = useAdminMutation(kind);
@@ -85,6 +86,15 @@ export function AdminCatalogue({ kind }) {
         </form>
         <label className={styles.catalogueFilter}><span>Homepage</span><Select aria-label="Filter by homepage visibility" value={homepage} onChange={event => { setHomepage(event.target.value); setPage(1); }}><option value="">All</option><option value="yes">On homepage</option><option value="no">Not on homepage</option></Select></label>
         {isProduct && <label className={styles.catalogueFilter}><span>Category</span><Select aria-label="Filter by category" value={category} onChange={event => { setCategory(event.target.value); setPage(1); }}>{[<option key="all" value="">All categories</option>, ...categories.map(item => <option key={item._id} value={item.slug}>{item.name}</option>)]}</Select></label>}
+        <label className={styles.catalogueFilter}>
+          <span>Sort by</span>
+          <Select value={sort} onChange={event => { setSort(event.target.value); setPage(1); }}>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="az">Name A to Z</option>
+            <option value="za">Name Z to A</option>
+          </Select>
+        </label>
         <div className={styles.catalogueResults}><span aria-live="polite">{query.isFetching ? "Updating…" : `${query.data?.total ?? 0} ${query.data?.total === 1 ? singular.toLowerCase() : kind} found`}</span>{hasFilters && <button type="button" onClick={clearFilters}>Clear filters</button>}</div>
       </div>
       {query.isPending ? <LoadingBlock label={`Loading ${kind}`} /> : query.isError && !query.data ? null : filtered.length === 0 ? <EmptyBlock title={`No ${kind} found`} text={hasFilters ? "Try another search or filter, or clear filters to see all items." : `Add your first ${singular.toLowerCase()} to get started.`} /> : (
@@ -113,7 +123,7 @@ export function AdminCatalogue({ kind }) {
 function CatalogueEditor({ item, isProduct, categories, homepageCount, saving, error, onClose, onSave }) {
   const formId = useId();
   const [uploading, setUploading] = useState(false);
-  const [values, setValues] = useState({ ...item, category: item.category?._id || item.category_id || item.category || "", image: item.image || { url: item.image_url || "", publicId: item.image_public_id || "" }, packagingDetails: item.packagingDetails || item.packaging_details || "", showOnHomepage: item.showOnHomepage ?? item.show_on_homepage ?? false });
+  const [values, setValues] = useState({ ...item, category: item.category?._id || item.category_id || item.category || "", image: item.image || { url: item.image_url || "", publicId: item.image_public_id || "" }, hsCode: item.hsCode ?? item.hs_code ?? "", packagingDetails: item.packagingDetails || item.packaging_details || "", showOnHomepage: item.showOnHomepage ?? item.show_on_homepage ?? false });
   const busy = saving || uploading;
   const cannotEnable = !item.showOnHomepage && !values.showOnHomepage && (homepageCount == null || homepageCount >= HOMEPAGE_LIMIT);
   const singular = isProduct ? "Product" : "Category";
@@ -122,7 +132,7 @@ function CatalogueEditor({ item, isProduct, categories, homepageCount, saving, e
     event.preventDefault();
     if (busy) return;
     const body = { name: values.name, slug: values.slug || slugify(values.name), description: values.description || "", image: { url: values.image?.url || "", publicId: values.image?.publicId || "" }, showOnHomepage: Boolean(values.showOnHomepage) };
-    if (isProduct) Object.assign(body, { category: values.category, packagingDetails: values.packagingDetails });
+    if (isProduct) Object.assign(body, { category: values.category, hsCode: values.hsCode.trim(), packagingDetails: values.packagingDetails });
     onSave(body);
   }
   return <AdminDialog title={`${item._id ? "Edit" : "New"} ${singular}`} description="Update your catalogue details and image." onClose={onClose} busy={busy} wide={isProduct} footer={<><Button variant="outline" onClick={onClose} disabled={busy}>Cancel</Button><Button form={formId} type="submit" variant="gold" disabled={busy}>{uploading ? "Uploading image…" : saving ? "Saving…" : `Save ${singular}`}</Button></>}>
@@ -132,6 +142,7 @@ function CatalogueEditor({ item, isProduct, categories, homepageCount, saving, e
         <Field label="Name"><Input value={values.name} maxLength={isProduct ? 150 : 100} onChange={event => { update("name", event.target.value); if (!item._id) update("slug", slugify(event.target.value)); }} required /></Field>
         <p className="-mt-3 break-all text-[11px] text-muted-foreground">Page address: /{isProduct ? "products" : "categories"}/{values.slug || "…"}</p>
         {isProduct && <Field label="Category"><Select value={values.category} onChange={event => update("category", event.target.value)} required><option value="" disabled>Select a category</option>{categories.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}</Select></Field>}
+        {isProduct && <Field label="HS Code (optional)"><Input name="hsCode" type="text" value={values.hsCode} maxLength={32} placeholder="Enter product HS code" onChange={event => update("hsCode", event.target.value)} /></Field>}
         <Field label="Description"><Textarea value={values.description || ""} maxLength={isProduct ? 5000 : 1000} onChange={event => update("description", event.target.value)} rows={4} /></Field>
         {isProduct && <Field label="Packaging details"><Textarea value={values.packagingDetails} maxLength={3000} onChange={event => update("packagingDetails", event.target.value)} rows={3} /></Field>}
         <div className="grid gap-3 rounded-lg border border-border bg-surface-muted p-4">

@@ -1,6 +1,7 @@
 import { saveCatalogueRecord } from "@/lib/homepage-selection";
 import { HOMEPAGE_LIMIT, homepageFilter } from "@/lib/homepage-settings";
 import { invalidateCatalogue } from "@/lib/catalogue-cache";
+import { sortCatalogue } from "@/lib/catalogue-sort";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
@@ -18,7 +19,7 @@ export async function GET(request) {
     const search = (params.get("search") || "").trim().slice(0, 200);
     if (search) query.$or = ["name", "description"].map(field => ({ [field]: { $regex: escapeRegex(search), $options: "i" } }));
     const { page, limit } = parsePagination(params, 15, 100);
-    let selection = Category.find(query).sort({ name: 1, _id: 1 });
+    let selection = sortCatalogue(Category.find(query), params.get("sort"));
     if (params.has("page") || params.has("limit")) selection = selection.skip((page - 1) * limit).limit(limit);
     const [categories, total, homepageCount] = await Promise.all([
       selection.lean(), Category.countDocuments(query), Category.countDocuments({ showOnHomepage: true }),

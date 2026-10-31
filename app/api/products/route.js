@@ -1,6 +1,7 @@
 import { saveCatalogueRecord } from "@/lib/homepage-selection";
 import { HOMEPAGE_LIMIT, homepageFilter } from "@/lib/homepage-settings";
 import { invalidateCatalogue } from "@/lib/catalogue-cache";
+import { sortCatalogue } from "@/lib/catalogue-sort";
 import { parsePagination, validObjectId, escapeRegex } from "@/lib/request-params";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
@@ -23,16 +24,16 @@ export async function GET(request) {
     const { page, limit } = parsePagination(searchParams, 12, 100);
     const category = searchParams.get("category") || "";
     const search = (searchParams.get("search") || "").trim().slice(0, 200);
-    const sort = searchParams.get("sort") || "newest";
+    const sort = searchParams.get("sort");
 
     const query = homepageFilter(searchParams.get("homepage") || "");
     if (category) query.category = await categoryFilter(category);
     if (search) query.$or = ["name", "description"].map(field => ({ [field]: { $regex: escapeRegex(search), $options: "i" } }));
 
     const skip = (page - 1) * limit;
-    const sortSpec = sort === "az" ? { name: 1, _id: 1 } : { createdAt: -1, _id: -1 };
+    const selection = sortCatalogue(Product.find(query), sort, "newest");
     const [products, total, homepageCount] = await Promise.all([
-      Product.find(query).populate("category", "name slug image description").sort(sortSpec).skip(skip).limit(limit).lean(),
+      selection.populate("category", "name slug image description").skip(skip).limit(limit).lean(),
       Product.countDocuments(query),
       Product.countDocuments({ showOnHomepage: true }),
     ]);

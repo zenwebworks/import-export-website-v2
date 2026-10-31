@@ -150,7 +150,7 @@
   gap: 6px;
 }
 
-.contactPanel > .channels { margin-top: 26px; }
+.contactPanel > .channels { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 26px; }
 
 .channel, .socialChannel {
   display: flex;
@@ -204,7 +204,7 @@
 .formPanel, .officePanel { scroll-margin-top: 100px; }
 .formPanel:target, .officePanel:target { outline: 2px solid #b57e2766; outline-offset: 3px; }
 
-.formSubtitle, .tradeSubtitle {
+.formSubtitle {
   margin-top: 16px;
   font-size: 14px;
   font-weight: 700;
@@ -215,15 +215,6 @@
 .formPanel > .panelDescription { margin-top: 7px; }
 .formWrapper { margin-top: 24px; }
 .formNote { margin-top: 21px; border-top: 1px solid #f0ece4; padding-top: 17px; }
-.tradeSubtitle { max-width: 255px; margin-left: calc(var(--heading-icon-size) + var(--heading-gap)); margin-top: 5px; }
-
-.tradeBody, .collaborationBody {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-  margin-top: 18px;
-}
 
 .points {
   display: grid;
@@ -236,16 +227,6 @@
 
 .points li { padding-left: 2px; }
 .points li::marker { color: var(--contact-gold); font-size: 10px; }
-
-.tradeImage, .collaborationImage {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1;
-  object-fit: contain;
-}
-
-.tradeImage { height: 210px; aspect-ratio: auto; object-fit: cover; }
 
 .enquiryLink {
   display: inline-flex;
@@ -268,8 +249,6 @@
 }
 
 .enquiryLink:hover { background: #2b322e; color: #ffe0a8; }
-.collaborationBody { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); margin-block: 22px 6px; }
-.collaborationBody .points { gap: 11px; }
 .officeLayout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: center; gap: 16px; margin-top: 22px; }
 .officeBody { display: flex; min-width: 0; align-items: flex-start; gap: 10px; }
 .officePin { flex-shrink: 0; color: var(--contact-gold); }
@@ -318,9 +297,6 @@
   .channel, .socialChannel { font-size: 12px; }
   .contactPanel > .channels { margin-top: 20px; }
   .socialSection { margin-block: 20px; }
-  .tradeBody { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
-  .tradeImage, .collaborationImage { max-width: 270px; justify-self: center; }
-  .tradeImage { height: auto; aspect-ratio: 1; object-fit: contain; }
 }
 
 @media (max-width: 479px) {
@@ -345,12 +321,7 @@
   .channelIcon { width: 26px; height: 26px; }
   .socialIcon { width: 33px; height: 33px; }
   .socialChannel small { font-size: 9px; }
-  .tradeSubtitle { font-size: 12px; }
-  .tradeBody { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 4px; }
   .points { font-size: 11px; gap: 9px; }
-  .collaborationBody { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .collaborationImage { width: 200px; }
-  .collaborationBody .points { gap: 10px; }
   .enquiryLink { min-height: 44px; font-size: 10px; }
   .officeLayout { grid-template-columns: minmax(0, 1fr); }
   .map iframe { height: 160px; }
@@ -359,4 +330,19 @@
 
 @media (prefers-reduced-motion: reduce) {
   .channel, .socialChannel, .enquiryLink { transition: none; }
+}
+
+.enquiriesPanel { margin-top: 20px; }
+.enquiryGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 25px; }
+.enquiryGroup { min-width: 0; padding-inline: 24px; }
+.enquiryGroup:first-child { padding-left: 0; }
+.enquiryGroup:last-child { padding-right: 0; }
+.enquiryGroup + .enquiryGroup { border-left: 1px solid var(--contact-border); }
+.enquiryGroup h3 { display: flex; align-items: flex-start; gap: 10px; color: var(--contact-ink); font-size: 15px; font-weight: 700; line-height: 1.5; }
+.enquiryGroup h3 svg { flex-shrink: 0; margin-top: 2px; color: var(--contact-gold); }
+.enquiryGroup > p { margin-block: 10px 17px; color: #697078; font-size: 12px; line-height: 1.7; }
+@media (max-width: 767px) {
+  .enquiryGrid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .enquiryGroup, .enquiryGroup:first-child, .enquiryGroup:last-child { padding-inline: 0; }
+  .enquiryGroup + .enquiryGroup { border-left: 0; border-top: 1px solid var(--contact-border); padding-top: 22px; }
 }

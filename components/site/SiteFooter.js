@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { SITE } from "@/lib/site";
 
@@ -88,7 +88,7 @@ export function SiteFooter() {
               ["/sourcing", "Product Sourcing"],
               ["/sourcing", "Supplier Verification"],
               ["/sourcing", "Quality Checking"],
-              ["/#about", "Custom Packaging"],
+              ["/products#custom-packaging", "Custom Packaging"],
               ["/import-services", "Import Support"],
               ["/export-services", "Export Solutions"],
               ["/collaboration", "Business Collaboration"],
@@ -106,7 +106,6 @@ export function SiteFooter() {
                 <a href={`mailto:${SITE.email}`} className="hover:text-white">{SITE.email}</a>
               </ContactLine>
               <ContactLine icon={MapPin}>{SITE.address}</ContactLine>
-              <ContactLine icon={Clock}>{SITE.hours}</ContactLine>
             </ul>
           </div>
         </div>
@@ -115,11 +114,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10 bg-[#030a10]">
         <div className="container-x flex flex-col items-center justify-between gap-3 py-4 text-xs text-white/48 sm:flex-row">
           <p>Copyright {year} {SITE.name}. All rights reserved.</p>
-          <p>
-            <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
-            <span className="mx-2 text-gold/60">|</span>
-            Designed for global trade excellence
-          </p>
+          <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
         </div>
       </div>
     </footer>

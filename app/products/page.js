@@ -1,6 +1,7 @@
 import { withSocialMetadata } from "@/lib/social";
 export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
+import { ProductPackaging } from "@/components/site/ProductPackaging";
 import { ProductsCatalogue } from "@/components/site/ProductsCatalogue";
 import { getAllCategories, getProductsPage } from "@/lib/data";
 import { catalogueParams } from "@/lib/request-params";
@@ -18,5 +19,10 @@ export default async function ProductsPage({ searchParams }) {
   const query = catalogueParams(await searchParams);
   const [categories, result] = await Promise.all([getAllCategories(), getProductsPage(query.category, query.search, query.page)]);
   if (query.page > Math.max(1, result.totalPages)) notFound();
-  return <ProductsCatalogue key={JSON.stringify(query)} initialSearch={query} categories={categories} products={result.products} pagination={result} />;
+  return (
+    <>
+      <ProductsCatalogue key={JSON.stringify(query)} initialSearch={query} categories={categories} products={result.products} pagination={result} />
+      <ProductPackaging />
+    </>
+  );
 }

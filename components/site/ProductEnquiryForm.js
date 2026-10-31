@@ -84,7 +84,6 @@ export function ProductEnquiryForm({ productName, productId = "" }) {
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4" noValidate>
-      <p className="text-xs text-muted-foreground">Enquiring about: <span className="font-semibold text-navy">{productName}</span></p>
       <div className="grid gap-4 sm:grid-cols-2">
         <SmallField label="Buyer name *" error={errors.buyer_name}><Input name="buyer_name" required /></SmallField>
         <SmallField label="Company *" error={errors.company_name}><Input name="company_name" required /></SmallField>
@@ -100,7 +99,7 @@ export function ProductEnquiryForm({ productName, productId = "" }) {
       <SmallField label="Delivery port / city *" error={errors.delivery_port}><Input name="delivery_port" required /></SmallField>
       <SmallField label="Notes" error={errors.notes}><Textarea name="notes" rows={3} /></SmallField>
       {formError && <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{formError}</p>}
-      <Button type="submit" variant="gold" disabled={loading}>
+      <Button type="submit" variant="gold" className="sm:justify-self-start" disabled={loading}>
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         {loading ? "Sending..." : "Send Enquiry"}
       </Button>

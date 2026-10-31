@@ -5,7 +5,7 @@ Generated with the built-in imagegen tool for the products page. The supplied sc
 ## Final assets
 
 - `public/assets/products-trade-hero-v2.webp` — 1920 × 640, used as the full-width products hero background. The dark teal treatment, white heading, gold subtitle and buttons follow the home, export-services and import-services heroes.
-- `public/assets/products-custom-packaging.webp` — 1200 × 800, used below the product catalogue.
+- `public/assets/products-custom-packaging.webp` — 1200 × 800, used in the packaging section on the export services page.
 
 Optimized as WebP from the generated PNGs. The originals were retained in the Codex generated-images directory.
 

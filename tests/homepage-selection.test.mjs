@@ -7,6 +7,7 @@ import Product from "../models/Product.js";
 import * as validations from "../lib/validations.js";
 import * as params from "../lib/request-params.js";
 import * as settings from "../lib/homepage-settings.js";
+import * as sorting from "../lib/catalogue-sort.js";
 
 async function loadModule(path, dependencies) {
   const module = new vm.SourceTextModule(await readFile(new URL(path, import.meta.url), "utf8"));
@@ -41,7 +42,12 @@ async function fixture() {
       if (Array.isArray(result)) {
         if (state.sort) result = [...result].sort((a, b) => {
           for (const [key, direction] of Object.entries(state.sort)) {
-            const order = String(a[key] || "").localeCompare(String(b[key] || "")) * direction;
+            const left = String(a[key] ?? "");
+            const right = String(b[key] ?? "");
+            const comparison = key === "name" && state.collator
+              ? state.collator.compare(left, right)
+              : left.localeCompare(right);
+            const order = comparison * direction;
             if (order) return order;
           }
           return 0;
@@ -53,6 +59,14 @@ async function fixture() {
     const chain = {
       session: session => { assert.ok(session.locked, "Selection reads must follow the transaction lock"); state.session = session; return chain; },
       sort: value => { state.sort = value; return chain; },
+      collation: options => {
+        state.collator = new Intl.Collator(options.locale, {
+          sensitivity: options.strength === 2 ? "accent" : "variant",
+          numeric: options.numericOrdering,
+        });
+        return chain;
+      },
+      select: () => chain,
       skip: value => { state.skip = value; return chain; },
       limit: value => { state.limit = value; return chain; },
       populate: () => chain,
@@ -111,6 +125,7 @@ async function fixture() {
       return fn;
     } },
     "@/lib/homepage-settings": settings,
+    "@/lib/catalogue-sort": sorting,
     "@/lib/catalogue-cache": { CATALOGUE_TAG: "public-catalogue", invalidateCatalogue: () => { invalidations++; } },
     "@/lib/request-params": params,
     "@/lib/db": { connectDB: async () => {} },
@@ -145,6 +160,85 @@ async function fixture() {
     fail: () => { writeFailure = true; },
   };
 }
+
+test("catalogue sorts filtered records before pagination and breaks name and date ties consistently", async () => {
+  const f = await fixture();
+  const category = f.stores.categories[0]._id;
+  const rows = [
+    ["spice 10", "2026-01-02"],
+    ["Spice 2", "2026-01-01"],
+    ["SPICE 2", "2026-01-02"],
+    ["Spice 1", "2026-01-04"],
+    ["Other item", "2026-01-05"],
+  ].map(([name, createdAt], i) => ({
+    _id: String(i + 1).padStart(24, "0"), name, category, createdAt, showOnHomepage: true,
+  }));
+  const expected = { newest: [4, 3, 1, 2], oldest: [2, 1, 3, 4], az: [4, 2, 3, 1], za: [1, 3, 2, 4] };
+  for (const kind of ["categories", "products"]) {
+    f.stores[kind].push(...rows);
+    for (const [sort, ids] of Object.entries(expected)) {
+      const actual = [];
+      for (const page of [1, 2]) {
+        const response = await f.call(kind, "GET", null, "", `search=spice&homepage=yes&sort=${sort}&page=${page}&limit=2`);
+        assert.equal(response.status, 200);
+        const data = await response.json();
+        assert.equal(data.total, 4);
+        actual.push(...data[kind].map(row => Number(row._id)));
+      }
+      assert.deepEqual(actual, ids, `${kind} ${sort}`);
+    }
+    const defaultList = await (await f.call(kind, "GET", null, "", "search=spice")).json();
+    assert.deepEqual(defaultList[kind].map(row => Number(row._id)), kind === "products" ? expected.newest : expected.az);
+  }
+  const publicIds = [];
+  for (const page of [1, 2]) {
+    const result = await f.data.getProductsPage("base", "spice", page, 2);
+    publicIds.push(...result.products.map(row => Number(row._id)));
+  }
+  assert.deepEqual(publicIds, expected.az);
+});
+
+test("product HS codes survive creation, reading, editing and clearing without losing leading zeros", async () => {
+  const f = await fixture();
+  const input = { ...f.input("Coded product"), hsCode: "  01012100  " };
+  const created = await f.call("products", "POST", input);
+  assert.equal(created.status, 201);
+  const { product } = await created.json();
+  assert.equal(product.hsCode, "01012100");
+  assert.equal(product.hs_code, "01012100");
+  assert.equal(f.stores.products[0].hsCode, "01012100");
+  const listed = await (await f.call("products", "GET")).json();
+  assert.equal(listed.products[0].hsCode, "01012100");
+  assert.equal((await f.data.getProductBySlug(product.slug)).hsCode, "01012100");
+
+  const edited = await f.call("products", "PUT", { ...input, hsCode: "0101.29" }, product._id);
+  assert.equal(edited.status, 200);
+  assert.equal((await edited.json()).product.hsCode, "0101.29");
+  const omitted = await f.call("products", "PUT", f.input("Coded product"), product._id);
+  assert.equal(omitted.status, 200);
+  assert.equal((await omitted.json()).product.hsCode, "0101.29");
+  const cleared = await f.call("products", "PUT", { ...input, hsCode: "  " }, product._id);
+  assert.equal(cleared.status, 200);
+  assert.equal((await cleared.json()).product.hsCode, "");
+  assert.equal(f.stores.products[0].hsCode, "");
+});
+
+test("HS codes remain optional for existing products and invalid input cannot overwrite a saved code", async () => {
+  const f = await fixture();
+  const created = await f.call("products", "POST", f.input("Legacy product"));
+  assert.equal(created.status, 201);
+  const { product } = await created.json();
+  delete f.stores.products[0].hsCode;
+  assert.equal((await f.data.getProductBySlug(product.slug)).hsCode, "");
+  assert.equal((await f.call("products", "PUT", { ...f.input("Legacy product"), hsCode: "001234" }, product._id)).status, 200);
+  for (const hsCode of [1234, null, {}, "1".repeat(33)]) {
+    assert.equal((await f.call("products", "POST", { ...f.input("Invalid code"), hsCode })).status, 400);
+    assert.equal((await f.call("products", "PUT", { ...f.input("Legacy product"), hsCode }, product._id)).status, 400);
+    assert.equal(f.stores.products[0].hsCode, "001234");
+  }
+  const invalidModel = new Product({ ...f.input("Invalid model"), hsCode: "1".repeat(33) });
+  assert.ok(invalidModel.validateSync().errors.hsCode);
+});
 
 test("homepage booleans default off and Featured is no longer a product option", async () => {
   for (const [schema, Model] of [[validations.categorySchema, Category], [validations.productSchema, Product]]) {

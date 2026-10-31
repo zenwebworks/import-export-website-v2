@@ -13,8 +13,8 @@ const SWIPE_THRESHOLD = 42;
 const SLIDES = [
   {
     id: "home",
-    image: "/assets/hero-home.png",
-    alt: "Cargo ship, airplane, global market globe, and Indian export products",
+    image: "/assets/hero-home-harbour.webp",
+    alt: "Container ship in a harbour at sunset, with a plane overhead and an illuminated globe beside the docks",
     objectPosition: "object-center",
     scrimStrong: 0.64,
     scrimMid: 0.36,
