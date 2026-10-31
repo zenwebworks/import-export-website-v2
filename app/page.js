@@ -241,9 +241,6 @@ export default async function HomePage() {
               <Button asChild variant="outlineLight" className="rounded text-xs font-extrabold uppercase">
                 <Link href="/contact">Contact Us</Link>
               </Button>
-              <Button asChild variant="outlineLight" className="rounded text-xs font-extrabold uppercase">
-                <Link href="/products">Export With Us</Link>
-              </Button>
             </div>
           </div>
         </div>

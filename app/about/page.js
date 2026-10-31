@@ -77,8 +77,8 @@ export default function AboutPage() {
                 </div>
               </div>
               <img
-                src="/assets/about-registrations-ramshel.jpeg"
-                alt="Ramshel Global Enterprises reception with a gold world map and company logo"
+                src="/assets/about-company-ramshel-reception.jpeg"
+                alt="Ramshel Global Trade reception with a gold world map above the company logo"
                 width={1536}
                 height={1024}
                 loading="lazy"
