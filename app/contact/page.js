@@ -60,8 +60,11 @@ export default function ContactPage() {
         </header>
 
         <div className={styles.topGrid}>
-          <section className={styles.panel} aria-labelledby="company-heading">
+          <section className={`${styles.panel} ${styles.companyPanel}`} aria-labelledby="company-heading">
             <PanelHeading icon={Building2} id="company-heading">Company details</PanelHeading>
+            <div className={styles.companyLogo}>
+              <img src="/assets/contact-ramshel-enterprises.webp" width={1254} height={668} alt="Ramshel Enterprises Pvt Ltd gold wolf logo" />
+            </div>
             <div className={styles.companyIdentity}>
               <p className={styles.companyBrand}>{SITE.name}</p>
               <p className={styles.companyLegal}>{companyName}</p>

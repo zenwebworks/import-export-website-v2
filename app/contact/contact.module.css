@@ -107,7 +107,27 @@
   color: #697078;
 }
 
-.companyIdentity { margin-block: 21px 17px; }
+.companyPanel { display: flex; flex-direction: column; }
+
+.companyLogo {
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+  aspect-ratio: 2.65;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #101010;
+}
+
+.companyLogo img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.companyIdentity { margin-block: 18px 10px; }
 
 .companyBrand {
   color: var(--contact-gold);

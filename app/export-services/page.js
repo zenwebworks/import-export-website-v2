@@ -30,8 +30,6 @@ export const metadata = withSocialMetadata({
   },
 });
 
-const heroBenefits = ["Trusted Sourcing", "Global Network", "Quality Assured", "On-Time Delivery", "End-to-End Support"];
-
 const services = [
   {
     icon: Globe,
@@ -61,11 +59,11 @@ const services = [
 ];
 
 const additionalServices = [
-  { title: "Custom Packaging", image: "/assets/export-custom-packaging.webp", alt: "Export products in protective boxes, pouches and glass jars" },
-  { title: "Private Label & Branding", image: "/assets/export-private-label.webp", alt: "Product packaging with blank labels ready for custom branding" },
-  { title: "Export Documentation", image: "/assets/export-documentation.webp", alt: "A logistics professional reviewing export documents at a desk" },
-  { title: "Logistics & Shipping", image: "/assets/export-logistics.webp", alt: "Container ship transporting goods to international markets" },
-  { title: "Order Management", image: "/assets/export-order-management.webp", alt: "Trade professionals coordinating a product order" },
+  { title: "Customised Export Packaging", image: "/assets/export-custom-packaging.webp", alt: "Export products in protective boxes, pouches and glass jars" },
+  { title: "Private Label & Product Branding", image: "/assets/export-private-label.webp", alt: "Product packaging with blank labels ready for custom branding" },
+  { title: "Export Documentation Coordination", image: "/assets/export-documentation.webp", alt: "A logistics professional reviewing export documents at a desk" },
+  { title: "International Freight Coordination", image: "/assets/export-logistics.webp", alt: "Container ship transporting goods to international markets" },
+  { title: "Export Order Coordination", image: "/assets/export-order-management.webp", alt: "Trade professionals coordinating a product order" },
 ];
 
 const reasons = [
@@ -101,20 +99,19 @@ export default function ExportServicesPage() {
         </div>
         <div className={`container-x ${styles.heroInner}`}>
           <div className={styles.heroContent}>
-            <p className={styles.heroEyebrow}><span /> YOUR PARTNER IN GLOBAL TRADE</p>
-            <h1 id="export-title">Export Services</h1>
-            <p className={styles.heroSubtitle}>From India. <span>To the world.</span></p>
+            <p className={styles.heroEyebrow}><span /> EXPORT SERVICES</p>
+            <h1 id="export-title">Your Global Partner<br /> for <span>Multi-Product Exports</span></h1>
             <p className={styles.heroDescription}>
-              End-to-end export solutions that connect<br className={styles.desktopBreak} /> Indian products with global opportunities.
+              Connecting international buyers with products sourced from India and reliable suppliers.
             </p>
-            <ul className={styles.heroBenefits}>
-              {heroBenefits.map((benefit) => (
-                <li key={benefit}><Check aria-hidden="true" />{benefit}</li>
-              ))}
-            </ul>
-            <Button asChild variant="gold" size="lg" className={styles.quoteButton}>
-              <Link href="/request-a-quote">Request a Quote <ArrowRight aria-hidden="true" /></Link>
-            </Button>
+            <div className={styles.heroActions}>
+              <Button asChild variant="gold" size="lg" className={styles.heroButton}>
+                <Link href="/products">Explore Our Products <ArrowRight aria-hidden="true" /></Link>
+              </Button>
+              <Button asChild variant="outlineLight" size="lg" className={styles.heroButton}>
+                <Link href="/request-a-quote">Request an Export Quote <ArrowRight aria-hidden="true" /></Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
