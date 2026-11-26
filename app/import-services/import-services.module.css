@@ -85,11 +85,9 @@
 .detailPanel { display: flex; flex-direction: column; min-width: 0; padding: 25px 22px 20px; border: 1px solid var(--import-border); border-radius: 12px; background: #fff; }
 .detailPanel > h2 { font-size: 19px; font-weight: 800; line-height: 1.6; text-align: center; text-transform: uppercase; }
 .panelAccent { width: 38px; height: 2px; margin: 11px auto 20px; background: #d3a555; }
-.marketsContent { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; flex: 1; gap: 13px; }
-.marketList { display: grid; gap: 11px; }
-.marketList li { display: flex; align-items: flex-start; gap: 9px; font-size: 12px; font-weight: 500; line-height: 1.5; }
-.marketMap { position: relative; min-width: 0; min-height: 255px; }
-.marketMap img { object-fit: contain; }
+.marketList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
+.marketList li { display: flex; align-items: flex-start; gap: 9px; color: #475969; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.marketMap { display: block; width: 100%; height: auto; margin-top: 24px; border: 1px solid #323438; border-radius: 8px; }
 .marketNote { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 19px; color: #657381; font-size: 11px; line-height: 1.7; }
 .marketNote svg { width: 14px; height: 14px; color: var(--import-gold); }
 .categoryGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); flex: 1; gap: 17px 14px; }
@@ -107,10 +105,6 @@
 @media (max-width: 999px) {
   .detailPanels { grid-template-columns: minmax(0, 1fr); }
   .detailPanel { padding: 27px; }
-  .marketsContent { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 24px; }
-  .marketMap { min-height: 285px; }
-  .marketList { gap: 12px; }
-  .marketList li { font-size: 13px; }
   .categoryGrid { gap: 20px; }
   .categoryCard h3 { font-size: 12px; }
 }
@@ -163,10 +157,6 @@
   .detailPanels { gap: 22px; margin-top: 30px; }
   .detailPanel { padding: 24px 19px 21px; }
   .detailPanel > h2 { font-size: 16px; }
-  .marketsContent { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 15px; }
-  .marketList { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
-  .marketList li { gap: 7px; font-size: 12px; }
-  .marketMap { width: 100%; min-height: 0; aspect-ratio: 2; }
   .categoryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 19px 14px; }
   .categoryCard h3 { font-size: 11px; }
   .moreCategories { font-size: 10px; }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,13 +35,12 @@ export function ExportPackaging() {
           <p className={styles.packagingNote}>Tell us your pack size, quantity and destination.</p>
         </div>
         <div className={styles.packagingArtwork}>
-          <img
-            src="/assets/products-custom-packaging.webp"
-            alt="Navy and kraft pouches, a spice jar, retail and shipping boxes, and a burlap sack showing packaging options"
-            width="1200"
-            height="800"
-            loading="lazy"
-            decoding="async"
+          <Image
+            src="/assets/ramshel-export-packaging.webp"
+            alt="Ramshel Global Trade navy and kraft pouches, spice jar, branded cartons and rice sack"
+            width={1535}
+            height={1024}
+            sizes="(max-width: 767px) 94vw, (max-width: 1279px) 50vw, 620px"
           />
         </div>
       </div>

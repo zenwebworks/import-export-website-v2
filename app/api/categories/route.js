@@ -5,7 +5,6 @@ import { sortCatalogue } from "@/lib/catalogue-sort";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import Category from "@/models/Category";
-import Product from "@/models/Product";
 import { categorySchema } from "@/lib/validations";
 import { requireAdmin } from "@/lib/api-auth";
 import { normalizeCategory } from "@/lib/data";
@@ -42,13 +41,10 @@ export async function POST(request) {
     }
 
     await connectDB();
-    const existing = await Category.findOne({ slug: parsed.data.slug });
-    if (existing) return NextResponse.json({ error: "A category with this slug already exists" }, { status: 409 });
-
     const category = await saveCatalogueRecord(Category, parsed.data);
     invalidateCatalogue();
     return NextResponse.json({ category: normalizeCategory(category) }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error.status ? error.message : "Failed to create category" }, { status: error.status || 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to create category", suggestedSlug: error.suggestedSlug }, { status: error.status || 500 });
   }
 }

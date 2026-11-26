@@ -13,6 +13,13 @@ export const metadata = withSocialMetadata({
   description: SITE.description,
   robots: IS_PUBLIC_SITE ? { index: true, follow: true } : { index: false, follow: false },
   authors: [{ name: SITE.name }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=gold-wolf", sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
+      { url: "/icons/wolf-192.png?v=gold-wolf", sizes: "192x192", type: "image/png" },
+    ],
+    apple: { url: "/apple-touch-icon.png?v=gold-wolf", sizes: "180x180", type: "image/png" },
+  },
   openGraph: {
     siteName: SITE.name,
     type: "website",

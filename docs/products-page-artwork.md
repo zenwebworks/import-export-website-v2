@@ -5,7 +5,7 @@ Generated with the built-in imagegen tool for the products page. The supplied sc
 ## Final assets
 
 - `public/assets/products-trade-hero-v2.webp` — 1920 × 640, used as the full-width products hero background. The dark teal treatment, white heading, gold subtitle and buttons follow the home, export-services and import-services heroes.
-- `public/assets/products-custom-packaging.webp` — 1200 × 800, used in the packaging section on the export services page.
+- `public/assets/ramshel-export-packaging.webp` is the uploaded Ramshel-branded photo on Export Services.
 
 Optimized as WebP from the generated PNGs. The originals were retained in the Codex generated-images directory.
 
@@ -15,10 +15,10 @@ Use case: ads-marketing. Create an original cinematic photographic website HERO 
 
 ## Previous hero generation prompt
 
-The previous light hero asset (`public/assets/products-trade-hero.webp`) is retained but is no longer used on the page.
+The previous light hero asset (`public/assets/products-trade-hero.webp`) was removed after the hero was replaced.
 
 Use case: ads-marketing. Asset type: original photographic artwork for the PRODUCTS catalogue hero of an Indian import/export company, Ramshel Global Trade. Generate a new composition, NOT a complete webpage or screenshot. Landscape 3:2 composition. A beautiful premium editorial still life of export goods on a pale warm ivory studio surface: a burlap sack of rice, small bowls of red chilli and turmeric, a small bowl of cashews, glass bottle of golden cooking oil, fresh green herbs, and one small handcrafted brass vessel. Products fill the lower right and center foreground. In the softly faded distant background a navy cargo ship with colorful containers at a port, a very subtle world map, and a small airplane crossing a light blue sky convey international trade. Refined realistic product photography, detailed materials, natural soft daylight, restrained navy and warm gold accents, authentic clean shapes. Products feel abundant but carefully composed, not cluttered. The leftmost 20 percent softly fades into plain warm off-white. Crop-safe generous edges with all main products fully visible. No people. NO typography, letters, slogans, labels, logos, seals, icons, badges, text or watermarks anywhere. Artwork only; website copy will be added separately in HTML.
 
-## Packaging generation prompt
+## Previous packaging generation prompt
 
 Use case: product-mockup. Asset type: original photographic illustration for a custom packaging section on an Indian exporter website. Generate a new composition, not a banner screenshot, no webpage UI. Landscape 3:2. A sophisticated studio still life of blank private-label packaging on a seamless very light warm ivory background: one deep navy matte stand-up resealable pouch, one natural kraft pouch, a short glass jar of spice with a brushed gold lid and a blank navy rectangular label, a neatly folded kraft retail carton, a larger corrugated shipping box behind, and a small burlap sack containing rice at the far right. Small loose peppercorns, star anise and cashews on the surface subtly convey food products. Group the packages in an artfully staggered compact composition across the center, all complete and uncropped, realistic scale, premium material textures, warm soft side light, gentle natural shadows, clean understated commercial photography. Navy, kraft brown, ivory and muted gold palette to match Ramshel Global Trade. Make the empty label areas look intentional and elegant, no invented branding. No people, no hands, NO TEXT, no letters, no logos, no watermark, no UI. The site will provide live text next to the artwork.

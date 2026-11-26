@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Boxes, CheckCircle2, Factory, Leaf, Package, PackageOpen, Warehouse } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,12 +59,14 @@ export function ProductPackaging() {
             </div>
           </div>
 
-          <div className="relative min-h-[260px] border-t border-border lg:min-h-full lg:border-l lg:border-t-0">
-            <img
-              src="/assets/home-packaging-private-label.png"
-              alt="Custom packaging display for export products"
-              loading="lazy"
-              className="h-full w-full object-cover"
+          <div className="flex min-w-0 items-center border-t border-border bg-[#f7f2ea] p-3 sm:p-4 lg:border-l lg:border-t-0">
+            <Image
+              src="/assets/ramshel-private-label.webp"
+              alt="Ramshel Global Trade green private-label pouch and spice jar with matching kraft cartons and rice sack"
+              width={1535}
+              height={1024}
+              sizes="(max-width: 1023px) 94vw, (max-width: 1279px) 44vw, 520px"
+              className="block h-auto w-full rounded-md"
             />
           </div>
         </div>

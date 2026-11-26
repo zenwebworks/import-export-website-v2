@@ -13,7 +13,7 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAdminMutation, useAdminQuery } from "@/lib/admin-client";
-import { slugify } from "@/lib/utils";
+import { catalogueAddress } from "@/lib/catalogue-address";
 import { HOMEPAGE_LIMIT } from "@/lib/homepage-settings";
 
 export function AdminCatalogue({ kind }) {
@@ -115,32 +115,40 @@ export function AdminCatalogue({ kind }) {
       )}
       {query.data && <Pagination page={page} totalPages={query.data.totalPages} total={query.data.total} onChange={setPage} busy={query.isFetching} />}
     </AdminCard>
-    {editing && <CatalogueEditor item={editing} isProduct={isProduct} categories={categories} homepageCount={homepageCount} saving={save.isPending} error={save.error} onClose={() => setEditing(null)} onSave={submit} />}
+    {editing && <CatalogueEditor item={editing} isProduct={isProduct} categories={categories} homepageCount={homepageCount} saving={save.isPending} error={save.error} clearError={save.reset} onClose={() => setEditing(null)} onSave={submit} />}
     {deleteTarget && <ConfirmDialog title={`Delete ${singular.toLowerCase()}?`} description={isProduct ? `Delete ${deleteTarget.name}? This removes it from the public catalogue.` : `Delete ${deleteTarget.name}? Categories with assigned products cannot be deleted.`} confirmLabel={`Delete ${singular}`} loading={remove.isPending} error={remove.error} onCancel={() => setDeleteTarget(null)} onConfirm={deleteRecord} />}
   </AdminShell>;
 }
 
-function CatalogueEditor({ item, isProduct, categories, homepageCount, saving, error, onClose, onSave }) {
+function CatalogueEditor({ item, isProduct, categories, homepageCount, saving, error, clearError, onClose, onSave }) {
   const formId = useId();
   const [uploading, setUploading] = useState(false);
   const [values, setValues] = useState({ ...item, category: item.category?._id || item.category_id || item.category || "", image: item.image || { url: item.image_url || "", publicId: item.image_public_id || "" }, hsCode: item.hsCode ?? item.hs_code ?? "", packagingDetails: item.packagingDetails || item.packaging_details || "", showOnHomepage: item.showOnHomepage ?? item.show_on_homepage ?? false });
   const busy = saving || uploading;
   const cannotEnable = !item.showOnHomepage && !values.showOnHomepage && (homepageCount == null || homepageCount >= HOMEPAGE_LIMIT);
   const singular = isProduct ? "Product" : "Category";
+  const address = error?.suggestedSlug || catalogueAddress(values.name, singular.toLowerCase(), item._id ? item : null);
+  const prefix = isProduct ? "/products/" : "/categories/";
   function update(field, value) { setValues(current => ({ ...current, [field]: value })); }
   function submit(event) {
     event.preventDefault();
     if (busy) return;
-    const body = { name: values.name, slug: values.slug || slugify(values.name), description: values.description || "", image: { url: values.image?.url || "", publicId: values.image?.publicId || "" }, showOnHomepage: Boolean(values.showOnHomepage) };
+    const body = { name: values.name, description: values.description || "", image: { url: values.image?.url || "", publicId: values.image?.publicId || "" }, showOnHomepage: Boolean(values.showOnHomepage) };
+    if (error?.suggestedSlug) body.confirmedSlug = error.suggestedSlug;
     if (isProduct) Object.assign(body, { category: values.category, hsCode: values.hsCode.trim(), packagingDetails: values.packagingDetails });
     onSave(body);
   }
-  return <AdminDialog title={`${item._id ? "Edit" : "New"} ${singular}`} description="Update your catalogue details and image." onClose={onClose} busy={busy} wide={isProduct} footer={<><Button variant="outline" onClick={onClose} disabled={busy}>Cancel</Button><Button form={formId} type="submit" variant="gold" disabled={busy}>{uploading ? "Uploading image…" : saving ? "Saving…" : `Save ${singular}`}</Button></>}>
+  return <AdminDialog title={`${item._id ? "Edit" : "New"} ${singular}`} description="Update your catalogue details and image." onClose={onClose} busy={busy} wide={isProduct} footer={<><Button variant="outline" onClick={onClose} disabled={busy}>Cancel</Button><Button form={formId} type="submit" variant="gold" disabled={busy}>{uploading ? "Uploading image…" : saving ? "Saving…" : error?.suggestedSlug ? "Save with suggested link" : `Save ${singular}`}</Button></>}>
     <ErrorNotice error={error} />
     <form id={formId} onSubmit={submit}><fieldset disabled={busy} className={`grid min-w-0 gap-6 ${isProduct ? "md:grid-cols-[minmax(0,1fr)_220px]" : ""}`}>
       <div className={styles.fields}>
-        <Field label="Name"><Input value={values.name} maxLength={isProduct ? 150 : 100} onChange={event => { update("name", event.target.value); if (!item._id) update("slug", slugify(event.target.value)); }} required /></Field>
-        <p className="-mt-3 break-all text-[11px] text-muted-foreground">Page address: /{isProduct ? "products" : "categories"}/{values.slug || "…"}</p>
+        <Field label="Name"><Input value={values.name} maxLength={isProduct ? 150 : 100} onChange={event => { if (error) clearError(); update("name", event.target.value); }} required /></Field>
+        <div className="grid gap-2">
+          <Field label={error?.suggestedSlug ? "Suggested page link" : "Page link"}>
+            <Input readOnly value={address ? prefix + address : ""} placeholder="Generated from the name" />
+          </Field>
+          {item._id && address && address !== item.slug && <p className="text-xs text-muted-foreground">Saving will change this page's link.</p>}
+        </div>
         {isProduct && <Field label="Category"><Select value={values.category} onChange={event => update("category", event.target.value)} required><option value="" disabled>Select a category</option>{categories.map(cat => <option key={cat._id} value={cat._id}>{cat.name}</option>)}</Select></Field>}
         {isProduct && <Field label="HS Code (optional)"><Input name="hsCode" type="text" value={values.hsCode} maxLength={32} placeholder="Enter product HS code" onChange={event => update("hsCode", event.target.value)} /></Field>}
         <Field label="Description"><Textarea value={values.description || ""} maxLength={isProduct ? 5000 : 1000} onChange={event => update("description", event.target.value)} rows={4} /></Field>

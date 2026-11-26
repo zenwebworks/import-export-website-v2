@@ -109,16 +109,19 @@ export default function ImportServicesPage() {
           <section className={styles.detailPanel} aria-labelledby="import-markets">
             <h2 id="import-markets">Import from Global Markets</h2>
             <span className={styles.panelAccent} aria-hidden="true" />
-            <div className={styles.marketsContent}>
-              <ul className={styles.marketList}>
-                {IMPORT_MARKETS.map((market) => (
-                  <li key={market.code}><CountryFlag market={market} /><span>{market.name}</span></li>
-                ))}
-              </ul>
-              <div className={styles.marketMap}>
-                <Image src="/assets/import-global-markets.webp" alt="Illustrative world map showing an international sourcing network" fill sizes="(max-width: 600px) 90vw, (max-width: 999px) 65vw, 430px" />
-              </div>
-            </div>
+            <ul className={styles.marketList}>
+              {IMPORT_MARKETS.map((market) => (
+                <li key={market.code}><CountryFlag market={market} /><span>{market.name}</span></li>
+              ))}
+            </ul>
+            <Image
+              className={styles.marketMap}
+              src="/assets/global-trade-routes.webp"
+              alt="World map with illuminated trade routes above a port at night"
+              width={1600}
+              height={900}
+              sizes="(max-width: 999px) 92vw, (max-width: 1279px) 45vw, 552px"
+            />
             <p className={styles.marketNote}><Globe2 aria-hidden="true" /> More markets. More possibilities.</p>
           </section>
 

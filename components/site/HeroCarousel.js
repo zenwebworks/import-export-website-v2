@@ -53,9 +53,9 @@ const SLIDES = [
   },
   {
     id: "sourcing",
-    image: "/assets/hero-global-sourcing.png",
-    alt: "Global sourcing scene with cargo ship, airplane, truck, cartons, and connected world map",
-    objectPosition: "object-[72%_center] md:object-[35%_center]",
+    image: "/assets/hero-sourcing-port.webp",
+    alt: "A container ship and freight truck beside harbour cranes at sunset, with an airplane overhead",
+    objectPosition: "object-[75%_center] md:object-center",
     scrimStrong: 0.58,
     scrimMid: 0.32,
     mobileScrim: { top: 0.38, mid: 0.3, bottom: 0.46 },

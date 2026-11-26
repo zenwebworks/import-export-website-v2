@@ -7,17 +7,11 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleDollarSign,
-  ClipboardCheck,
-  FileCheck2,
   Globe2,
   Handshake,
   Package,
-  PackageCheck,
-  PackageSearch,
-  Search,
   ShieldCheck,
   Truck,
-  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
@@ -182,7 +176,6 @@ export default async function HomePage() {
         <div className="grid gap-3 lg:grid-cols-[0.82fr_1.18fr]">
           <ImageInfoCard
             title="Global Markets"
-            text="Connect with buyers, suppliers and distributors across our international trade markets."
             image="/assets/home-global-markets.png"
             href="/contact"
             cta="Explore Markets"
@@ -317,7 +310,7 @@ function ImageInfoCard({ title, text, image, href, cta, children }) {
       <div className="relative flex min-h-[360px] flex-col justify-between p-5 sm:p-7">
         <div>
           <h2 className="text-xl font-extrabold uppercase text-gold sm:text-2xl">{title}</h2>
-          <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/76">{text}</p>
+          {text && <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/76">{text}</p>}
           {children}
         </div>
         <Button asChild variant="outlineLight" className="mt-7 w-fit rounded text-xs font-extrabold uppercase">

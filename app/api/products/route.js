@@ -54,15 +54,12 @@ export async function POST(request) {
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message || "Invalid data" }, { status: 400 });
 
     await connectDB();
-    const existing = await Product.findOne({ slug: parsed.data.slug });
-    if (existing) return NextResponse.json({ error: "A product with this slug already exists" }, { status: 409 });
-
     if (!validObjectId(parsed.data.category) || !await Category.exists({ _id: parsed.data.category })) return NextResponse.json({ error: "Choose an existing category" }, { status: 400 });
     const product = await saveCatalogueRecord(Product, parsed.data);
     await Product.populate(product, { path: "category", select: "name slug image description" });
     invalidateCatalogue();
     return NextResponse.json({ product: normalizeProduct(product) }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error.status ? error.message : "Failed to create product" }, { status: error.status || 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to create product", suggestedSlug: error.suggestedSlug }, { status: error.status || 500 });
   }
 }

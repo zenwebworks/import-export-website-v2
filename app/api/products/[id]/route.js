@@ -24,9 +24,6 @@ export async function PUT(request, { params }) {
 
     await connectDB();
     if (!validObjectId(parsed.data.category) || !await Category.exists({ _id: parsed.data.category })) return NextResponse.json({ error: "Choose an existing category" }, { status: 400 });
-    const duplicate = await Product.findOne({ slug: parsed.data.slug, _id: { $ne: id } });
-    if (duplicate) return NextResponse.json({ error: "A product with this slug already exists" }, { status: 409 });
-
     const existing = await Product.findById(id);
     if (!existing) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
@@ -40,7 +37,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ product: normalizeProduct(product) });
   } catch (error) {
-    return NextResponse.json({ error: error.status ? error.message : "Failed to update product" }, { status: error.status || 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to update product", suggestedSlug: error.suggestedSlug }, { status: error.status || 500 });
   }
 }
 

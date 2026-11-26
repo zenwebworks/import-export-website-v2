@@ -91,7 +91,7 @@ Constraints: no text, no labels, no logos, no watermarks, no UI; no people.
 
 ## Reused project imagery
 
-- `public/assets/import-global-markets.webp`: optimized from `public/assets/sourcing-global-markets-map.png`. This is an illustrative map, not a shipment tracking display.
+- `public/assets/global-trade-routes.webp` is the uploaded trade map shared with the Sourcing page.
 - Additional services use the existing `export-custom-packaging.webp`, `export-private-label.webp`, `export-documentation.webp`, `export-logistics.webp`, and `export-order-management.webp` in `public/assets/`. See `docs/export-services-images.md` for generation prompts and source details.
 
 ## Content and behaviour

@@ -7,6 +7,7 @@ import Product from "../models/Product.js";
 import * as validations from "../lib/validations.js";
 import * as params from "../lib/request-params.js";
 import * as settings from "../lib/homepage-settings.js";
+import * as addresses from "../lib/catalogue-address.js";
 import * as sorting from "../lib/catalogue-sort.js";
 
 async function loadModule(path, dependencies) {
@@ -126,6 +127,7 @@ async function fixture() {
     } },
     "@/lib/homepage-settings": settings,
     "@/lib/catalogue-sort": sorting,
+    "@/lib/catalogue-address": addresses,
     "@/lib/catalogue-cache": { CATALOGUE_TAG: "public-catalogue", invalidateCatalogue: () => { invalidations++; } },
     "@/lib/request-params": params,
     "@/lib/db": { connectDB: async () => {} },
@@ -246,7 +248,7 @@ test("homepage booleans default off and Featured is no longer a product option",
     assert.equal(schema.parse(input).showOnHomepage, false);
     assert.equal("featured" in schema.parse(input), false);
     for (const enabled of [true, false]) {
-      const record = new Model(schema.parse({ ...input, showOnHomepage: enabled }));
+      const record = new Model({ ...schema.parse({ ...input, showOnHomepage: enabled }), slug: "spices" });
       await record.validate();
       assert.equal(record.showOnHomepage, enabled);
     }
@@ -256,6 +258,56 @@ test("homepage booleans default off and Featured is no longer a product option",
 
 for (const kind of ["categories", "products"]) {
   const singular = kind === "categories" ? "category" : "product";
+  test(`${kind}: links follow meaningful title changes and preserve legacy links on other edits`, async () => {
+    const f = await fixture();
+    const create = (name, extra) => f.call(kind, "POST", { ...f.input(name), ...extra });
+    for (const [name, slug] of [
+      ["BLACK seed OIL!!", "black-seed-oil"], ["Black Sesame Oil (Cold Pressed)", "black-sesame-oil-cold-pressed"],
+      ["Rice [1.5 kg]", "rice-1-5-kg"], ["Rice 15 kg", "rice-15-kg"], ["Spices/Herbs", "spices-herbs"],
+      ["Buyer\u2019s Caf\u00e9", "buyers-cafe"], ["\u0b85\u0bb0\u0bbf\u0b9a\u0bbf", singular],
+    ]) {
+      const response = await create(name, { slug: "manual-override" });
+      assert.equal(response.status, 201);
+      assert.equal((await response.json())[singular].slug, slug);
+    }
+    assert.equal((await create("[]!!")).status, 400);
+    const row = f.stores[kind].find(row => row.slug === "black-seed-oil");
+    row.slug = "previous-custom-link";
+    const save = name => f.call(kind, "PUT", { ...f.input(name), image: { url: "/new.jpg" } }, row._id);
+    for (const name of ["BLACK seed OIL!!", "Black [Seed] Oil"]) {
+      assert.equal((await (await save(name)).json())[singular].slug, "previous-custom-link");
+    }
+    const blocked = await save("Rice 15 kg");
+    assert.equal(blocked.status, 409);
+    assert.equal(f.stores[kind].find(record => record._id === row._id).slug, "previous-custom-link");
+    assert.equal((await (await save("Cold Pressed Seed Oil")).json())[singular].slug, "cold-pressed-seed-oil");
+    const lookup = kind === "products" ? f.data.getProductBySlug : f.data.getCategoryBySlug;
+    assert.equal(await lookup("previous-custom-link"), null);
+    assert.equal((await lookup("cold-pressed-seed-oil"))._id, row._id);
+  });
+
+  test(`${kind}: duplicates require confirmation and stale suggestions cannot take another record's link`, async () => {
+    const f = await fixture();
+    const create = confirmedSlug => f.call(kind, "POST", { ...f.input("White Pepper"), confirmedSlug });
+    const responses = await Promise.all([create(), create()]);
+    assert.deepEqual(responses.map(r => r.status).sort(), [201, 409]);
+    const conflict = await responses.find(r => r.status === 409).json();
+    assert.match(conflict.error, /White Pepper/);
+    assert.equal(conflict.suggestedSlug, "white-pepper-2");
+    assert.equal((await create("unrelated-slug")).status, 409);
+    const confirmed = await Promise.all([create(conflict.suggestedSlug), create(conflict.suggestedSlug)]);
+    assert.deepEqual(confirmed.map(r => r.status).sort(), [201, 409]);
+    const duplicate = (await confirmed.find(r => r.status === 201).json())[singular];
+    assert.equal(duplicate.slug, "white-pepper-2");
+    assert.equal((await confirmed.find(r => r.status === 409).json()).suggestedSlug, "white-pepper-3");
+    const edited = await f.call(kind, "PUT", f.input("WHITE [Pepper]"), duplicate._id);
+    assert.equal((await edited.json())[singular].slug, duplicate.slug);
+    const other = (await (await f.call(kind, "POST", f.input("Green Pepper"))).json())[singular];
+    const rename = await f.call(kind, "PUT", { ...f.input("White Pepper"), confirmedSlug: "white-pepper-3" }, other._id);
+    assert.equal((await rename.json())[singular].slug, "white-pepper-3");
+    assert.equal(f.stores[kind].some(row => "confirmedSlug" in row), false);
+  });
+
   test(`${kind}: limit applies to creation, editing, and switches; disabling frees a place`, async () => {
     const f = await fixture();
     for (let i = 0; i < 10; i++) assert.equal((await f.call(kind, "POST", f.input(`Item ${i}`, true))).status, 201);

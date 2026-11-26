@@ -2,7 +2,7 @@ import { withSocialMetadata } from "@/lib/social";
 import { TRADE_MARKETS } from "@/lib/markets";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, FileText, Globe, Handshake, Plane, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, FileText, Handshake, PackageSearch, Plane, ShieldCheck } from "lucide-react";
 import { ExportPackaging } from "@/components/site/ExportPackaging";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/site";
@@ -32,9 +32,9 @@ export const metadata = withSocialMetadata({
 
 const services = [
   {
-    icon: Globe,
-    title: "Global Market Access",
-    description: "Connect with verified international buyers across global markets.",
+    icon: PackageSearch,
+    title: "Product Sourcing",
+    description: "Sourcing suitable products from trusted Indian manufacturers and suppliers.",
   },
   {
     icon: ShieldCheck,
@@ -132,6 +132,11 @@ export default function ExportServicesPage() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section className={styles.productPartnership} aria-labelledby="connect-indian-products">
+          <h2 id="connect-indian-products">CONNECT WITH INDIAN PRODUCTS</h2>
+          <p>Partner with RAMSHEL GLOBAL TRADE to source and export Indian products to international markets.</p>
         </section>
 
         <section className={styles.additionalSection} aria-labelledby="additional-services">

@@ -23,9 +23,6 @@ export async function PUT(request, { params }) {
     if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message || "Invalid data" }, { status: 400 });
 
     await connectDB();
-    const duplicate = await Category.findOne({ slug: parsed.data.slug, _id: { $ne: id } });
-    if (duplicate) return NextResponse.json({ error: "A category with this slug already exists" }, { status: 409 });
-
     const existing = await Category.findById(id);
     if (!existing) return NextResponse.json({ error: "Category not found" }, { status: 404 });
 
@@ -38,7 +35,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({ category: normalizeCategory(category) });
   } catch (error) {
-    return NextResponse.json({ error: error.status ? error.message : "Failed to update category" }, { status: error.status || 500 });
+    return NextResponse.json({ error: error.status ? error.message : "Failed to update category", suggestedSlug: error.suggestedSlug }, { status: error.status || 500 });
   }
 }
 

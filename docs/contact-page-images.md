@@ -1,10 +1,10 @@
 # Contact page imagery
 
-Generated with the built-in Imagegen tool on 2026-08-27. These are illustrative assets, not photographs of company assets or personnel. Originals remain in the generation folder; optimized 640 × 640 WebP copies are used by the page.
+Generated with the built-in Imagegen tool on 2026-08-27. These are illustrative assets, not photographs of company assets or personnel. Originals remain in the generation folder; the former square WebP copies were removed from the website.
 
 ## contact-export
 
-Saved asset: [contact-export.webp](C:/Users/Admin/Downloads/new-import-export-website/public/assets/contact-export.webp)
+Former asset: `contact-export.webp`
 
 Final prompt:
 
@@ -12,7 +12,7 @@ Use case: product-mockup. Asset type: illustration for an import/export company 
 
 ## contact-import
 
-Saved asset: [contact-import.webp](C:/Users/Admin/Downloads/new-import-export-website/public/assets/contact-import.webp)
+Former asset: `contact-import.webp`
 
 Final prompt:
 
@@ -20,7 +20,7 @@ Use case: product-mockup. Asset type: illustration for an import/export company 
 
 ## contact-collaboration
 
-Saved asset: [contact-collaboration.webp](C:/Users/Admin/Downloads/new-import-export-website/public/assets/contact-collaboration.webp)
+Former asset: `contact-collaboration.webp`
 
 Final prompt:
 
